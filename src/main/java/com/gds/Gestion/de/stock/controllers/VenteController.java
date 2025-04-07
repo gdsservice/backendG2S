@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/vente")
 public class VenteController {
 
+//    test
     private final InterfaceVente interfaceVente;
 
     @PostMapping("/effectuerVente")
