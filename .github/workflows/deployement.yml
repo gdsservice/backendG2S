@@ -1,0 +1,58 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Install sshpass and rsync
+        run: sudo apt-get install -y sshpass rsync
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          cat >>~/.ssh/config <<END
+          Host deploy
+            HostName ${{ secrets.HOST }}
+            User ${{ secrets.USERNAME }}
+            IdentityFile ~/.ssh/deploy_key
+            StrictHostKeyChecking no
+          END
+
+      - name: Copy files via SSH
+        run: |
+          rsync -avz -e "ssh -F ~/.ssh/config" \
+            target/*.jar \
+            docker-compose.yml \
+            deploy:/root/app/
+
+      - name: Deploy on VPS
+        run: |
+          ssh -F ~/.ssh/config deploy "
+            cd /root/app &&
+            docker-compose down &&
+            docker-compose up -d --build
+          "
+
+      - name: Cleanup
+        run: rm -rf ~/.ssh/deploy_key
