@@ -25,11 +25,11 @@ public class SecurityController {
 
     @PostMapping("/login")
     private Map<String, String> conexion(@RequestBody AuthentificationDTO authentificationDTO){
+        System.out.println("TTTTTTTTTTTTTTTTTTT");
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
         );
         if (authenticate.isAuthenticated()){
-            System.out.println("TTTTTTTTTTTTTTTTTTT");
             log.info("Resulta{}",authenticate.isAuthenticated());
             return jwtService.genererToken(authentificationDTO.username());
         }
