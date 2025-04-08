@@ -29,6 +29,7 @@ public class SecurityController {
                 new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
         );
         if (authenticate.isAuthenticated()){
+            System.out.println("TTTTTTTTTTTTTTTTTTT");
             log.info("Resulta{}",authenticate.isAuthenticated());
             return jwtService.genererToken(authentificationDTO.username());
         }
