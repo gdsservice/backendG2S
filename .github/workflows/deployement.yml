@@ -52,7 +52,7 @@ jobs:
           key_path: private_key.pem
           password: ${{ secrets.PRIVATE_KEY }}
           script: |
-            cd /root/app/Gestion-de-stock
+            cd /root/app/backendG2S
             docker-compose down
             docker-compose up -d --build
       - name: Cleanup private key
