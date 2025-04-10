@@ -5,8 +5,8 @@ services:
     restart: always
     ports:
       - "8443:8443"
-    #volumes:
-      #- /root/certs:/app/certs
+    volumes:
+      - /root/certs:/app/certs
     environment:
       - spring.datasource.url=jdbc:mysql://stock-database:3306/stock_db
       - spring.datasource.username=stock
