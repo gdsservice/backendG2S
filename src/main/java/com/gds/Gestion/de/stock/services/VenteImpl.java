@@ -82,16 +82,16 @@ public class VenteImpl implements InterfaceVente {
 
         List<VenteProduit> listVenteProduit = venteInput.getListVenteProduit();
 
-        for (VenteProduit venteProduit : listVenteProduit){
+        for (VenteProduit venteProduit : listVenteProduit) {
 
-            if (venteInput.getVente().getReduction() > (0.2 * venteInput.getVente().getMontant())){
+            if (venteInput.getVente().getReduction() > (0.2 * venteInput.getVente().getMontant())) {
                 throw new EmptyException("La réduction ne peut pas dépasser 20 % du montant pour le produit ");
             }
             vente.setReduction(venteInput.getVente().getReduction());
 
             // Obtenir le produit depuis la DB
             ProduitDTO produitDTO = produit.afficherProd(venteProduit.getProduit().getIdProd());
-            if (venteInput.getVente().getQuantite() > produitDTO.getQuantite()){
+            if (venteInput.getVente().getQuantite() > produitDTO.getQuantite()) {
                 throw new EmptyException("Le stock est inssufisant ! ");
             }
 
@@ -101,46 +101,6 @@ public class VenteImpl implements InterfaceVente {
         }
         vente.setQuantite(venteInput.getVente().getQuantite());
         vente.setMontant(venteInput.getVente().getMontant());
-
-
-
-
-        /*// Initialiser le montant total et la quantité totale
-        int montantTotal = 0;
-        int quantiteTotale = 0;
-
-
-
-        for (VenteProduit venteProduit : listVenteProduit) {
-            // Obtenir le produit depuis la DB
-            ProduitDTO produitDTO = produit.afficherProd(venteProduit.getProduit().getIdProd());
-
-            // Vérifier le stock
-            if (produitDTO.getQuantite() < venteProduit.getQuantite()) {
-                throw new InsufficientStockException("Stock insuffisant de "+produitDTO.getDesignation());
-            }
-
-            // Calcul du montant
-            int montantProduit = produitDTO.getPrixUnitaire() * venteProduit.getQuantite();
-            montantTotal += montantProduit;
-            quantiteTotale += venteProduit.getQuantite();
-
-            // Mise à jour du stock
-            produitDTO.setQuantite(produitDTO.getQuantite() - venteProduit.getQuantite());
-            produitDTO.setMontant(produitDTO.getMontant() - montantProduit);
-
-            // Appliquer la réduction sur le montant total
-//            if (vente.getReduction() > (0.2 * montantTotal)) {
-//                throw new InsufficientStockException("La réduction ne peut pas dépasser 20 % du montant pour le produit ");
-//            }
-//            montantTotal -= venteInput.getVente().getReduction();
-//            if (montantTotal < 0) {
-//                montantTotal = 0;
-//            }
-
-            // Enregistrer la mise à jour du produit
-            produitRepository.save(produitMapper.mapDeDtoAProd(produitDTO));
-        }*/
 
         // Enregistrer la vente
         Vente saveVente = venteRepository.save(vente);
@@ -156,43 +116,40 @@ public class VenteImpl implements InterfaceVente {
             venteProduit.setMontant(montantProduit);
             venteProduitRepository.save(venteProduit);
         }
-
-
     }
 
 
     @Override
     public void annulerVente(VenteDTO venteDTO) throws EmptyException {
 
+        // Vérifier si la vente existe
         Vente venteExist = venteRepository.findById(venteDTO.getIdVente())
                 .orElseThrow(() -> new EmptyException("Cette vente n'existe pas"));
 
-        // Vérification du statut
+        // Vérifier si la vente est déjà annulée
         if (venteExist.getStatus() == StatusVente.ANNULER) {
             throw new EmptyException("La vente est déjà annulée");
         }
 
-        // Vérification de nullité avant l'itération sur les produits
+        // Récupérer la liste des produits de la vente
         List<VenteProduit> venteProduitsList = venteProduitRepository.findVenteProduitsByVenteId(venteDTO.getIdVente());
         if (venteProduitsList == null || venteProduitsList.isEmpty()) {
             throw new EmptyException("La vente n'a pas de produits à annuler.");
         }
 
-        // Mise à jour des informations de la vente
-        venteDTO.setDateVente(venteExist.getDateVente());
-        venteDTO.setSupprimerStatus(venteExist.getSupprimerStatus());
-        venteDTO.setIdVente(venteExist.getIdVente());
-        venteDTO.setStatus(StatusVente.ANNULER);
-        venteDTO.setClientDTO(clientMapper.mapDeClientADto(venteExist.getClientsVente()));
-//        venteRepository.save(venteMapper.mapDeDtoAVente(venteDTO));
-
+        // Remettre les quantités et montants en stock
         for (VenteProduit venteProduit : venteProduitsList) {
             Produit produit = venteProduit.getProduit();
             produit.setQuantite(produit.getQuantite() + venteProduit.getQuantite());
             produit.setMontant(produit.getMontant() + venteProduit.getMontant() + venteProduit.getReduction());
             produitRepository.save(produit);
         }
+
+        // Mettre à jour le statut de la vente
+        venteExist.setStatus(StatusVente.ANNULER);
+        venteRepository.save(venteExist);
     }
+
 
     //  modifier une vente
     @Override
@@ -254,15 +211,25 @@ public class VenteImpl implements InterfaceVente {
     //    supprimer une vente
     @Override
     public void supprimerVente(String venteId) throws VenteNotFoundException {
-//        change
-        VenteDAO venteDAO = afficherVente(venteId);
-        Vente vente = venteMapper.mapDeDAOAVente(venteDAO);
-//        Vente vente = venteMapper.mapDeDAOAVente(venteDAO.getVente());
-        if (venteDAO == null)
-            throw new VenteNotFoundException("Vente n'existe pas");
+        // Vérifier l'existence de la vente
+        Vente vente = venteRepository.findById(venteId)
+                .orElseThrow(() -> new VenteNotFoundException("La vente avec l'ID " + venteId + " n'existe pas."));
+
+        // Marquer comme supprimée
         vente.setSupprimerStatus(SupprimerStatus.TRUE);
+
+        // Optionnel : Récupérer le stock si la vente est annulée
+        List<VenteProduit> venteProduits = venteProduitRepository.findVenteProduitsByVenteId(venteId);
+        for (VenteProduit vp : venteProduits) {
+            Produit produit = vp.getProduit();
+            produit.setQuantite(produit.getQuantite() + vp.getQuantite());
+            produitRepository.save(produit);
+        }
+
+        // Enregistrer la mise à jour
         venteRepository.save(vente);
     }
+
 }
 
 //    SET FOREIGN_KEY_CHECKS=0;

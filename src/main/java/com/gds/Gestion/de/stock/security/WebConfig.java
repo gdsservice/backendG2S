@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
             registry.addMapping("/**")
                     .allowedOrigins("https://stock.g2sservice.com")
 //                    .allowedOrigins("http://localhost:42817")
-                .allowedOrigins("http://localhost:4200")
+//                .allowedOrigins("http://localhost:4200")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
