@@ -24,11 +24,11 @@ public class VenteProduitMapper {
         return venteProduitDTO;
     }
 
-    public VenteProduit mapDeVenteProduitADAO(VenteDTO venteDTO) {
-        VenteProduit venteProduit = new VenteProduit();
-        venteProduit.setVente(venteMapper.mapDeDtoAVente(venteDTO));
-        venteProduit.setProduit(venteProduit.getProduit());
-        System.out.println(venteProduit+"++++++++++++++++++");
-        return venteProduit;
-    }
+//    public VenteProduit mapDeVenteProduitADAO(VenteDTO venteDTO) {
+//        VenteProduit venteProduit = new VenteProduit();
+//        venteProduit.setVente(venteMapper.mapDeDtoAVente(venteDTO));
+//        venteProduit.setProduit(venteProduit.getProduit());
+//        System.out.println(venteProduit+"++++++++++++++++++");
+//        return venteProduit;
+//    }
 }

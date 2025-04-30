@@ -14,6 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VenteDAO {
-    private VenteDTO vente;
+    private Vente vente;
     private List<VenteProduit> venteProduitList;
 }

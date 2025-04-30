@@ -19,26 +19,24 @@ public class VenteMapper {
     @Autowired
     private ClientMapper clientMapper;
 
-    public Vente mapDeDtoAVente(VenteDTO venteDTO) {
+    public Vente mapDeDAOAVente(VenteDAO venteDAO) {
         Vente vente = new Vente();
-        BeanUtils.copyProperties(venteDTO, vente);
-        vente.setClientsVente(clientMapper.mapDeDtoAClient(venteDTO.getClientDTO()));
-
+        BeanUtils.copyProperties(venteDAO, vente);
+        vente.setClientsVente(venteDAO.getVente().getClientsVente());
         return vente;
     }
 
     public VenteDTO mapDeVenteADTO(Vente vente) {
         VenteDTO venteDTO = new VenteDTO();
         BeanUtils.copyProperties(vente, venteDTO);
-        System.out.println(vente+"================11");
         venteDTO.setClientDTO(clientMapper.mapDeClientADto(vente.getClientsVente()));
         return venteDTO;
     }
 
-    public VenteProduit mapDeVenteADAO(VenteDTO venteDTO) {
-        VenteProduit venteProduit = new VenteProduit();
-        venteProduit.setVente(mapDeDtoAVente(venteDTO));
-        venteProduit.setProduit(venteProduit.getProduit());
-        return venteProduit;
-    }
+//    public VenteProduit mapDeVenteADAO(VenteDTO venteDTO) {
+//        VenteProduit venteProduit = new VenteProduit();
+//        venteProduit.setVente(mapDeDtoAVente(venteDTO));
+//        venteProduit.setProduit(venteProduit.getProduit());
+//        return venteProduit;
+//    }
 }

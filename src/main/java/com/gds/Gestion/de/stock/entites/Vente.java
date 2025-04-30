@@ -40,4 +40,5 @@ public class Vente {
 
     @ManyToOne
     private Client clientsVente;
+
 }

@@ -1,6 +1,8 @@
 package com.gds.Gestion.de.stock.Input;
 
 import com.gds.Gestion.de.stock.DTOs.ProduitDTO;
+import com.gds.Gestion.de.stock.entites.Vente;
+import com.gds.Gestion.de.stock.entites.VenteProduit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class VenteInput {
 
-    private int quantite;
-    private int reduction;
-    private List<ProduitDTO> produit;
-    private ClientInput clientInput;
+    private Vente vente;
+    private List<VenteProduit> listVenteProduit;
 }

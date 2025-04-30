@@ -10,4 +10,8 @@ public interface ProduitRepository extends JpaRepository<Produit, String> {
 
     @Query("SELECT p FROM Produit p WHERE p.supprimerStatus = 'FALSE'")
     List<Produit> findAllBySupprimerStatusFalse();
+
+    @Query("SELECT p.quantite FROM Produit p WHERE p.supprimerStatus = 'FALSE'")
+    List<Integer> findQuantiteBySupprimerStatusFalse();
+
 }

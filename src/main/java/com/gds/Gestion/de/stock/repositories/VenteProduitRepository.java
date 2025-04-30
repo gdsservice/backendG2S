@@ -14,7 +14,7 @@ public interface VenteProduitRepository extends JpaRepository<VenteProduit, Long
     List<VenteProduit> findVenteProduitsByVenteId(String idVente);
 
 //    Chercher tous les ventes avec id dans la table VenteProduit
-    List<VenteProduit> findByVenteIdVente(String idVente );
+    List<VenteProduit> findByVenteIdVente(String idVente);
 
 
 

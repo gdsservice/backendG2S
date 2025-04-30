@@ -41,7 +41,7 @@ public class VenteInputMapper {
     public Vente mapDeVenteInputAVente(VenteInput venteInput) {
         Vente vente = new Vente();
         BeanUtils.copyProperties(venteInput, vente);
-        vente.setClientsVente(clientMapper.mapDeClientInputAClient(venteInput.getClientInput()));
+        vente.setClientsVente(venteInput.getVente().getClientsVente());
         return vente;
     }
 

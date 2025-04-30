@@ -36,7 +36,7 @@ public class PdfController {
         List<VenteProduit> venteProduitList = venteProduitRepository.findByVenteIdVente(idVente);
 
             VenteDAO venteDAO = new VenteDAO();
-            venteDAO.setVente(venteMapper.mapDeVenteADTO(venteProduitList.get(0).getVente()));
+            venteDAO.setVente(venteProduitList.get(0).getVente());
             venteDAO.setVenteProduitList(venteProduitList);
             byte[] pdfBytes = pdfService.generateVentePdf(venteDAO);
             HttpHeaders headers = new HttpHeaders();

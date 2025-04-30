@@ -40,17 +40,22 @@ public class VenteImpl implements InterfaceVente {
 
 
     private final ClientMapper clientMapper;
+
     private VenteMapper venteMapper;
+
     private VenteInputMapper venteInputMapper;
 
     private VenteRepository venteRepository;
 
     private VenteProduitRepository venteProduitRepository;
+
     private ClientRepository clientRepository;
 
     private ProduitRepository produitRepository;
 
     private ProduitMapper produitMapper;
+
+    private ProduitImpl produit;
 
 //    private ClientMapper clientMapper;
 
@@ -58,13 +63,12 @@ public class VenteImpl implements InterfaceVente {
     @Override
     public void effectuerVente(VenteInput venteInput) throws Exception {
 
-        // Validation des entrées
-        if (venteInput.getProduit() == null) {
+//        // Validation des entrées
+        if (venteInput.getListVenteProduit().stream().map(VenteProduit::getProduit).collect(Collectors.toList()).isEmpty()) {
             throw new EmptyException("Sélectionner un produit !");
         }
-
-        if (venteInput.getClientInput() == null) {
-            throw new EmptyException("Veuillez sélectionner un client !");
+        if (venteInput.getVente().getClientsVente() == null) {
+            throw new EmptyException("Sélectionner un client !");
         }
 
         // Création de la vente
@@ -74,60 +78,85 @@ public class VenteImpl implements InterfaceVente {
         vente.setStatus(StatusVente.TRAITER);
         vente.setSupprimerStatus(SupprimerStatus.FALSE);
         vente.setDateVente(LocalDate.now());
-//        vente.setClientsVente(client);
         vente.setIdVente("GDS" + UUID.randomUUID());
 
-        // Initialiser le montant total et la quantité totale
+        List<VenteProduit> listVenteProduit = venteInput.getListVenteProduit();
+
+        for (VenteProduit venteProduit : listVenteProduit){
+
+            if (venteInput.getVente().getReduction() > (0.2 * venteInput.getVente().getMontant())){
+                throw new EmptyException("La réduction ne peut pas dépasser 20 % du montant pour le produit ");
+            }
+            vente.setReduction(venteInput.getVente().getReduction());
+
+            // Obtenir le produit depuis la DB
+            ProduitDTO produitDTO = produit.afficherProd(venteProduit.getProduit().getIdProd());
+            if (venteInput.getVente().getQuantite() > produitDTO.getQuantite()){
+                throw new EmptyException("Le stock est inssufisant ! ");
+            }
+            produitDTO.setQuantite(produitDTO.getQuantite() - venteInput.getVente().getQuantite());
+            produitDTO.setMontant((produitDTO.getPrixUnitaire() * venteInput.getVente().getQuantite()) - venteInput.getVente().getQuantite());
+            produitRepository.save(produitMapper.mapDeDtoAProd(produitDTO));
+        }
+        vente.setQuantite(venteInput.getVente().getQuantite());
+        vente.setMontant(venteInput.getVente().getMontant());
+
+
+
+
+        /*// Initialiser le montant total et la quantité totale
         int montantTotal = 0;
         int quantiteTotale = 0;
 
-        List<ProduitDTO> produitsVend = venteInput.getProduit();
 
-        for (ProduitDTO produitDTO : produitsVend) {
-            Produit produit = produitMapper.mapDeDtoAProd(produitDTO);
+
+        for (VenteProduit venteProduit : listVenteProduit) {
+            // Obtenir le produit depuis la DB
+            ProduitDTO produitDTO = produit.afficherProd(venteProduit.getProduit().getIdProd());
+
             // Vérifier le stock
-            if (produit.getQuantite() < venteInput.getQuantite()) {
-                throw new InsufficientStockException("Le stock de la quantité du produit est insuffisant ");
+            if (produitDTO.getQuantite() < venteProduit.getQuantite()) {
+                throw new InsufficientStockException("Stock insuffisant de "+produitDTO.getDesignation());
             }
 
-            // Calcul du montant de produit
-            int montantProduit = produit.getPrixUnitaire() * venteInput.getQuantite();
+            // Calcul du montant
+            int montantProduit = produitDTO.getPrixUnitaire() * venteProduit.getQuantite();
             montantTotal += montantProduit;
+            quantiteTotale += venteProduit.getQuantite();
 
-            // Ajouter la quantité de ce produit à la quantité totale
-            quantiteTotale += venteInput.getQuantite();
+            // Mise à jour du stock
+            produitDTO.setQuantite(produitDTO.getQuantite() - venteProduit.getQuantite());
+            produitDTO.setMontant(produitDTO.getMontant() - montantProduit);
 
-            // Mise à jour des produits
-            produit.setQuantite(produit.getQuantite() - venteInput.getQuantite());
-            produit.setMontant(produit.getMontant() - montantProduit);
-            produitRepository.save(produit);
-        }
+            // Appliquer la réduction sur le montant total
+//            if (vente.getReduction() > (0.2 * montantTotal)) {
+//                throw new InsufficientStockException("La réduction ne peut pas dépasser 20 % du montant pour le produit ");
+//            }
+//            montantTotal -= venteInput.getVente().getReduction();
+//            if (montantTotal < 0) {
+//                montantTotal = 0;
+//            }
 
-        // Appliquer la réduction sur le montant total
-        if (vente.getReduction() > (0.2 * montantTotal)) {
-            throw new InsufficientStockException("La réduction ne peut pas dépasser 20 % du montant pour le produit ");
-        }
-        montantTotal -= venteInput.getReduction();
-        if (montantTotal < 0) {
-            montantTotal = 0;
-        }
+            // Enregistrer la mise à jour du produit
+            produitRepository.save(produitMapper.mapDeDtoAProd(produitDTO));
+        }*/
 
-        // Enregistrer la vente avec le montant et la quantité totale
-        vente.setMontant(montantTotal);
-        vente.setQuantite(quantiteTotale);
+        // Enregistrer la vente
         Vente saveVente = venteRepository.save(vente);
 
-        // Enregistrer les détails de la vente
-        for (ProduitDTO produitDTO : produitsVend) {
+//        // Enregistrer les détails de la vente
+        for (VenteProduit vpInput : listVenteProduit) {
             VenteProduit venteProduit = new VenteProduit();
-            Produit produit = produitMapper.mapDeDtoAProd(produitDTO);
-            venteProduit.setProduit(produit);
+            venteProduit.setProduit(vpInput.getProduit());
             venteProduit.setVente(saveVente);
-            venteProduit.setMontant(produit.getPrixUnitaire() * venteInput.getQuantite() - venteInput.getReduction());
-            venteProduit.setQuantite(venteInput.getQuantite());
-            System.out.println(venteInput.getQuantite() + "=================");
+            venteProduit.setQuantite(vpInput.getQuantite());
+            venteProduit.setReduction(vpInput.getReduction());
+            int montantProduit = vpInput.getProduit().getPrixUnitaire() * vpInput.getQuantite() - vpInput.getReduction();
+            venteProduit.setMontant(montantProduit);
             venteProduitRepository.save(venteProduit);
         }
+
+
     }
 
 
@@ -154,7 +183,7 @@ public class VenteImpl implements InterfaceVente {
         venteDTO.setIdVente(venteExist.getIdVente());
         venteDTO.setStatus(StatusVente.ANNULER);
         venteDTO.setClientDTO(clientMapper.mapDeClientADto(venteExist.getClientsVente()));
-        venteRepository.save(venteMapper.mapDeDtoAVente(venteDTO));
+//        venteRepository.save(venteMapper.mapDeDtoAVente(venteDTO));
 
         for (VenteProduit venteProduit : venteProduitsList) {
             Produit produit = venteProduit.getProduit();
@@ -170,18 +199,18 @@ public class VenteImpl implements InterfaceVente {
         // Récupérer la vente à modifier
         Vente venteExist = venteRepository.findById(venteDTO.getIdVente())
                 .orElseThrow(() -> new VenteNotFoundException("Cette vente n'existe pas"));
-        Vente vente = venteMapper.mapDeDtoAVente(venteDTO);
+//        Vente vente = venteMapper.mapDeDtoAVente(venteDTO);
         // Mise à jour des informations de la vente
-        vente.setUtilisateurVente(venteExist.getUtilisateurVente());
-        if (venteDTO.getStatus() == StatusVente.ANNULER) {
-            throw new VenteNotFoundException("Vente est deja annule");
-        }
-        vente.setStatus(StatusVente.TRAITER);
-        vente.setDateVente(LocalDate.now());
-        vente.setSupprimerStatus(SupprimerStatus.FALSE);
-        vente.setIdVente(venteExist.getIdVente());
-        vente.setClientsVente(venteExist.getClientsVente());
-        venteRepository.save(vente);
+//        vente.setUtilisateurVente(venteExist.getUtilisateurVente());
+//        if (venteDTO.getStatus() == StatusVente.ANNULER) {
+//            throw new VenteNotFoundException("Vente est deja annule");
+//        }
+//        vente.setStatus(StatusVente.TRAITER);
+//        vente.setDateVente(LocalDate.now());
+//        vente.setSupprimerStatus(SupprimerStatus.FALSE);
+//        vente.setIdVente(venteExist.getIdVente());
+//        vente.setClientsVente(venteExist.getClientsVente());
+//        venteRepository.save(vente);
     }
 
 
@@ -189,9 +218,9 @@ public class VenteImpl implements InterfaceVente {
     @Override
     public VenteDAO afficherVente(String idVente) throws VenteNotFoundException {
         Vente vente = venteRepository.findById(idVente).orElseThrow(() -> new VenteNotFoundException("Vente n'existe pas"));
-        VenteDTO venteDTO = venteMapper.mapDeVenteADTO(vente);
+//        VenteDTO venteDTO = venteMapper.mapDeVenteADTO(vente);
         VenteDAO venteDAO = new VenteDAO();
-        venteDAO.setVente(venteDTO);
+        venteDAO.setVente(vente);
         List<VenteProduit> byVenteIdVente = venteProduitRepository.findByVenteIdVente(vente.getIdVente());
         venteDAO.setVenteProduitList(byVenteIdVente);
         return venteDAO;
@@ -202,16 +231,13 @@ public class VenteImpl implements InterfaceVente {
     public List<VenteDAO> listerVente() {
 //        recuperer la vente qui n'est pas supprimer dans allVente
         List<Vente> allVente = venteRepository.findAllBySupprimerStatusFalse();
-
-//        convertir vente en venteDTO
-        List<VenteDTO> venteDTOList = allVente.stream().map(vente -> venteMapper.mapDeVenteADTO(vente)).collect(Collectors.toList());
 //        initialisation de tableau pour la liste de venteDAO
         List<VenteDAO> venteDAOList = new ArrayList<>();
 //        Parcouri la liste de venteDAO
-        for (VenteDTO venteDto : venteDTOList) {
+        for (Vente vente : allVente) {
             VenteDAO venteDAO = new VenteDAO();
-            venteDAO.setVente(venteDto);
-            String idVente = venteMapper.mapDeDtoAVente(venteDto).getIdVente();
+            venteDAO.setVente(vente);
+            String idVente = vente.getIdVente();
             List<VenteProduit> venteProduitList = venteProduitRepository.findByVenteIdVente(idVente);
             venteDAO.setVenteProduitList(venteProduitList);
             venteDAOList.add(venteDAO);
@@ -229,8 +255,9 @@ public class VenteImpl implements InterfaceVente {
     public void supprimerVente(String venteId) throws VenteNotFoundException {
 //        change
         VenteDAO venteDAO = afficherVente(venteId);
-        Vente vente = venteMapper.mapDeDtoAVente(venteDAO.getVente());
-        if (vente == null)
+        Vente vente = venteMapper.mapDeDAOAVente(venteDAO);
+//        Vente vente = venteMapper.mapDeDAOAVente(venteDAO.getVente());
+        if (venteDAO == null)
             throw new VenteNotFoundException("Vente n'existe pas");
         vente.setSupprimerStatus(SupprimerStatus.TRUE);
         venteRepository.save(vente);

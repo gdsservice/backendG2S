@@ -65,8 +65,8 @@ public class PdfService {
             // Détails de la Vente
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.FRENCH);
             String dateVenteFormat = venteDAO.getVente().getDateVente().format(formatter);
-            document.add(new Paragraph("Doit : " + venteDAO.getVente().getClientDTO().getPrenom() + " " + venteDAO.getVente().getClientDTO().getNom()
-                    + "\nTéléphone : " + venteDAO.getVente().getClientDTO().getTelephone()
+            document.add(new Paragraph("Doit : " + venteDAO.getVente().getClientsVente().getPrenom() + " " + venteDAO.getVente().getClientsVente().getNom()
+                    + "\nTéléphone : " + venteDAO.getVente().getClientsVente().getTelephone()
                     + "\nDate de vente : " + dateVenteFormat)
                             .setBold()
                     .setFontSize(10));
