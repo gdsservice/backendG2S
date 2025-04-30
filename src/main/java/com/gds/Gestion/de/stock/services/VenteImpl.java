@@ -94,8 +94,9 @@ public class VenteImpl implements InterfaceVente {
             if (venteInput.getVente().getQuantite() > produitDTO.getQuantite()){
                 throw new EmptyException("Le stock est inssufisant ! ");
             }
-            produitDTO.setQuantite(produitDTO.getQuantite() - venteInput.getVente().getQuantite());
-            produitDTO.setMontant((produitDTO.getPrixUnitaire() * venteInput.getVente().getQuantite()) - venteInput.getVente().getQuantite());
+
+            produitDTO.setQuantite(produitDTO.getQuantite() - venteProduit.getQuantite());
+            produitDTO.setMontant((produitDTO.getPrixUnitaire() * venteProduit.getQuantite()) - venteProduit.getReduction());
             produitRepository.save(produitMapper.mapDeDtoAProd(produitDTO));
         }
         vente.setQuantite(venteInput.getVente().getQuantite());
