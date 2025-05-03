@@ -1,7 +1,9 @@
 package com.gds.Gestion.de.stock.services;
 
 
+import com.gds.Gestion.de.stock.DAOs.ProduitDAO;
 import com.gds.Gestion.de.stock.DTOs.ProduitDTO;
+import com.gds.Gestion.de.stock.Input.ProduitINPUT;
 import com.gds.Gestion.de.stock.entites.Produit;
 import com.gds.Gestion.de.stock.entites.Utilisateur;
 import com.gds.Gestion.de.stock.enums.SupprimerStatus;
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -30,18 +33,25 @@ public class ProduitImpl implements InterfaceProduit {
 
 
     @Override
-    public ProduitDTO enregistrerProd(ProduitDTO produitDTO) throws MontantQuantiteNullException{
-        Produit produit = produitMapper.mapDeDtoAProd(produitDTO);
+    public void enregistrerProd(ProduitINPUT produitINPUT) throws MontantQuantiteNullException, IOException, EmptyException {
 
-//        verification de produit entrant
+        Produit produit = produitMapper.mapDeINPUTAProd(produitINPUT);
 
-        if (produitDTO.getQuantite() <= 0)
+        //        verification de produit entrant
+        if (produitINPUT.getImage() == null && produitINPUT.getImageUrl() == null && produitINPUT.getImage().getContentType() == null) {
+            throw new EmptyException("Selectionner une image");
+        }
+
+        if (produitINPUT.getQuantite() <= 0)
             throw new MontantQuantiteNullException("La quantite doit etre superieur a 0");
 
-        if (produitDTO.getPrixUnitaire() <= 0 )
+        if (produitINPUT.getPrixUnitaire() <= 0 )
             throw new MontantQuantiteNullException("Le prix unitaire doit etre superieur a 0");
 
-        int montant = produitDTO.getPrixUnitaire() * produitDTO.getQuantite();
+        produit.setImageData(produitINPUT.getImage().getBytes());
+        produit.setImageType(produitINPUT.getImage().getContentType());
+        produit.setImageName(produitINPUT.getImage().getOriginalFilename());
+        int montant = produitINPUT.getPrixUnitaire() * produitINPUT.getQuantite();
         produit.setMontant(montant);
         produit.setDate(LocalDate.now());
         Utilisateur userConnecter = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -49,7 +59,10 @@ public class ProduitImpl implements InterfaceProduit {
         produit.setIdProd("GDS "+UUID.randomUUID());
         produit.setDate(LocalDate.now());
         produit.setSupprimerStatus(SupprimerStatus.FALSE);
-        return produitMapper.mapDeProdADto(produitRepository.save(produit));
+        Produit save = produitRepository.save(produit);
+        ProduitINPUT produitINPUT1 = produitMapper.mapDeProdAINPUT(save);
+        produitINPUT1.setImageUrl("/produit/image/" + save.getIdProd());
+//        return produitDAO1;
     }
 
     @Override
@@ -69,20 +82,22 @@ public class ProduitImpl implements InterfaceProduit {
     }
 
     @Override
-    public ProduitDTO modifierProd(ProduitDTO produitDTO) throws EmptyException {
+    public void modifierProd(ProduitINPUT produitINPUT) throws EmptyException {
 
-        Produit produitExist = produitRepository.findById(produitDTO.getIdProd())
+        Produit produitExist = produitRepository.findById(produitINPUT.getIdProd())
                 .orElseThrow(()-> new EmptyException("Cet produits n'existe pas"));
 
-        Produit produit = produitMapper.mapDeDtoAProd(produitDTO);
+        Produit produit = produitMapper.mapDeINPUTAProd(produitINPUT);
 
-        produit.setIdProd(produitExist.getIdProd());
-        produit.setUtilisateurProd(produitExist.getUtilisateurProd());
-        int montant = produitDTO.getPrixUnitaire() * produitDTO.getQuantite();
-        produit.setMontant(montant);
-        produit.setDate(produitExist.getDate());
-        produit.setSupprimerStatus(SupprimerStatus.FALSE);
-        return produitMapper.mapDeProdADto(produitRepository.save(produit));
+        produitExist.setIdProd(produitExist.getIdProd());
+        produitExist.setUtilisateurProd(produitExist.getUtilisateurProd());
+        produitExist.setPrixUnitaire(produitINPUT.getPrixUnitaire());
+        produitExist.setQuantite(produitINPUT.getQuantite());
+        int montant = produitINPUT.getPrixUnitaire() * produitINPUT.getQuantite();
+        produitExist.setMontant(montant);
+        produitExist.setDate(produitExist.getDate());
+        produitExist.setSupprimerStatus(SupprimerStatus.FALSE);
+        produitMapper.mapDeProdADto(produitRepository.save(produitExist));
     }
 
     @Override
@@ -97,16 +112,16 @@ public class ProduitImpl implements InterfaceProduit {
     }
 
     @Override
-    public ProduitDTO afficherProd(String idStock) throws ProduitNotFoundException {
-       return produitMapper.mapDeProdADto(produitRepository.findById(idStock).orElseThrow(()->
+    public ProduitDAO afficherProd(String idStock) throws ProduitNotFoundException {
+       return produitMapper.mapDeProdADAO(produitRepository.findById(idStock).orElseThrow(()->
                new ProduitNotFoundException(" Cet stock n'existe pas")));
 
     }
 
     @Override
-    public List<ProduitDTO> ListerProd() {
+    public List<ProduitDAO> ListerProd() {
         List<Produit> produits = produitRepository.findAllBySupprimerStatusFalse();
-        return produits.stream().map(produit -> produitMapper.mapDeProdADto(produit))
+        return produits.stream().map(produit -> produitMapper.mapDeProdADAO(produit))
                 .collect(Collectors.toList());
     }
 }

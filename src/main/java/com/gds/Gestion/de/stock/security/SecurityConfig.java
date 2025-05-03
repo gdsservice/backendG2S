@@ -39,7 +39,10 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/auth/login","/produit/image/**",  // Autoriser l'accès aux images
+                                "/error",
+                                "/static/**",
+                                "/assets/**").permitAll()
 
                         .requestMatchers(POST,"/user/creer").hasRole("SUPER_ADMIN")
                         .requestMatchers(PUT, "/user/modifier/{idUser}").hasRole("SUPER_ADMIN")
@@ -61,6 +64,7 @@ public class SecurityConfig {
                         .requestMatchers(GET, "/produit/afficherProd/{idProd}").hasAnyRole("SUPER_ADMIN", "ADMIN")
                         .requestMatchers(GET, "/produit/listeProd").hasAnyRole("SUPER_ADMIN", "ADMIN")
                         .requestMatchers(GET, "/produit/afficherProdSansStock").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                        .requestMatchers(GET, "/produit/image/{id}").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
                         .requestMatchers(POST, "/vente/effectuerVente").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
                         .requestMatchers(POST, "/vente/annulerVente").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")

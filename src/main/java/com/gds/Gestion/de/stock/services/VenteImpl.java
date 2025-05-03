@@ -1,8 +1,8 @@
 package com.gds.Gestion.de.stock.services;
 
 
-import com.gds.Gestion.de.stock.DAO.VenteDAO;
-import com.gds.Gestion.de.stock.DTOs.ApprovisionDTO;
+import com.gds.Gestion.de.stock.DAOs.ProduitDAO;
+import com.gds.Gestion.de.stock.DAOs.VenteDAO;
 import com.gds.Gestion.de.stock.DTOs.ProduitDTO;
 import com.gds.Gestion.de.stock.DTOs.VenteDTO;
 import com.gds.Gestion.de.stock.Input.VenteInput;
@@ -18,7 +18,6 @@ import com.gds.Gestion.de.stock.repositories.ClientRepository;
 import com.gds.Gestion.de.stock.repositories.ProduitRepository;
 import com.gds.Gestion.de.stock.repositories.VenteProduitRepository;
 import com.gds.Gestion.de.stock.repositories.VenteRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -90,14 +88,15 @@ public class VenteImpl implements InterfaceVente {
             vente.setReduction(venteInput.getVente().getReduction());
 
             // Obtenir le produit depuis la DB
-            ProduitDTO produitDTO = produit.afficherProd(venteProduit.getProduit().getIdProd());
-            if (venteInput.getVente().getQuantite() > produitDTO.getQuantite()) {
-                throw new EmptyException("Le stock est inssufisant ! ");
+            Produit produitExist = produitRepository.findById(venteProduit.getProduit().getIdProd())
+                    .orElseThrow(() -> new ProduitNotFoundException("Produit introuvable"));
+            if (venteInput.getVente().getQuantite() > produitExist.getQuantite() || venteInput.getVente().getMontant() > produitExist.getMontant()) {
+                throw new EmptyException("Le stock est inssufisant !");
             }
 
-            produitDTO.setQuantite(produitDTO.getQuantite() - venteProduit.getQuantite());
-            produitDTO.setMontant((produitDTO.getPrixUnitaire() * venteProduit.getQuantite()) - venteProduit.getReduction());
-            produitRepository.save(produitMapper.mapDeDtoAProd(produitDTO));
+            produitExist.setQuantite(produitExist.getQuantite() - venteProduit.getQuantite());
+            produitExist.setMontant(produitExist.getPrixUnitaire() * produitExist.getQuantite());
+            produitRepository.save(produitExist);
         }
         vente.setQuantite(venteInput.getVente().getQuantite());
         vente.setMontant(venteInput.getVente().getMontant());
@@ -223,6 +222,7 @@ public class VenteImpl implements InterfaceVente {
         for (VenteProduit vp : venteProduits) {
             Produit produit = vp.getProduit();
             produit.setQuantite(produit.getQuantite() + vp.getQuantite());
+            produit.setMontant(produit.getMontant() + vp.getMontant());
             produitRepository.save(produit);
         }
 

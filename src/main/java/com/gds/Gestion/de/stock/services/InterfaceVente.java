@@ -1,10 +1,8 @@
 package com.gds.Gestion.de.stock.services;
 
-import com.gds.Gestion.de.stock.DAO.VenteDAO;
-import com.gds.Gestion.de.stock.DTOs.ApprovisionDTO;
+import com.gds.Gestion.de.stock.DAOs.VenteDAO;
 import com.gds.Gestion.de.stock.DTOs.VenteDTO;
 import com.gds.Gestion.de.stock.Input.VenteInput;
-import com.gds.Gestion.de.stock.entites.VenteProduit;
 import com.gds.Gestion.de.stock.exceptions.EmptyException;
 import com.gds.Gestion.de.stock.exceptions.VenteNotFoundException;
 

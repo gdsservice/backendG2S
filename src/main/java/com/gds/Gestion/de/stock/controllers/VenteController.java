@@ -1,9 +1,8 @@
 package com.gds.Gestion.de.stock.controllers;
 
-import com.gds.Gestion.de.stock.DAO.VenteDAO;
+import com.gds.Gestion.de.stock.DAOs.VenteDAO;
 import com.gds.Gestion.de.stock.DTOs.VenteDTO;
 import com.gds.Gestion.de.stock.Input.VenteInput;
-import com.gds.Gestion.de.stock.entites.VenteProduit;
 import com.gds.Gestion.de.stock.exceptions.*;
 import com.gds.Gestion.de.stock.services.InterfaceVente;
 import jakarta.validation.Valid;

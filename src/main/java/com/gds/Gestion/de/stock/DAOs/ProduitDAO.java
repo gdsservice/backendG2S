@@ -1,26 +1,21 @@
-package com.gds.Gestion.de.stock.DTOs;
+package com.gds.Gestion.de.stock.DAOs;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gds.Gestion.de.stock.DTOs.CategorieStockDTO;
+import com.gds.Gestion.de.stock.entites.CategorieStock;
 import com.gds.Gestion.de.stock.entites.Utilisateur;
-import com.gds.Gestion.de.stock.entites.VenteProduit;
 import com.gds.Gestion.de.stock.enums.SupprimerStatus;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.time.LocalDate;
-import java.util.List;
-
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProduitDTO {
+public class ProduitDAO {
 
     private String idProd;
     private String designation;
@@ -34,5 +29,4 @@ public class ProduitDTO {
     private SupprimerStatus supprimerStatus;
     private CategorieStockDTO categorieStockProdDTO;
     private Utilisateur utilisateurProd;
-
 }

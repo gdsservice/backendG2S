@@ -26,12 +26,19 @@ public class Produit {
     private int prixUnitaire;
     @Column(length = 100)
     private int montant;
-    private String image;
+//    private String image;
     private LocalDate date;
     @Column(length = 255)
     private String note;
     @Enumerated(EnumType.STRING)
     private SupprimerStatus supprimerStatus;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] imageData;
+
+    private String imageType;
+
+    private String imageName;
 
 //    SET FOREIGN_KEY_CHECKS=0;
 

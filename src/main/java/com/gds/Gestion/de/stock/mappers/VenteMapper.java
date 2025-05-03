@@ -1,17 +1,11 @@
 package com.gds.Gestion.de.stock.mappers;
 
-import com.gds.Gestion.de.stock.DAO.VenteDAO;
-import com.gds.Gestion.de.stock.DTOs.ProduitDTO;
+import com.gds.Gestion.de.stock.DAOs.VenteDAO;
 import com.gds.Gestion.de.stock.DTOs.VenteDTO;
-import com.gds.Gestion.de.stock.entites.Produit;
 import com.gds.Gestion.de.stock.entites.Vente;
-import com.gds.Gestion.de.stock.entites.VenteProduit;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class VenteMapper {

@@ -1,7 +1,5 @@
-package com.gds.Gestion.de.stock.DAO;
+package com.gds.Gestion.de.stock.DAOs;
 
-import com.gds.Gestion.de.stock.DTOs.VenteDTO;
-import com.gds.Gestion.de.stock.entites.Produit;
 import com.gds.Gestion.de.stock.entites.Vente;
 import com.gds.Gestion.de.stock.entites.VenteProduit;
 import lombok.AllArgsConstructor;
