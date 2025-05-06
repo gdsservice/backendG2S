@@ -17,7 +17,7 @@ public interface InterfaceProduit {
 
     ProduitDTO enregistrerDetteProd(ProduitDTO produitDTO);
 
-    void modifierProd(ProduitINPUT produitINPUT) throws EmptyException;
+    void modifierProd(ProduitINPUT produitINPUT) throws EmptyException, IOException;
 
     void suppressionProd(String idProd) throws ProduitNotFoundException;
 

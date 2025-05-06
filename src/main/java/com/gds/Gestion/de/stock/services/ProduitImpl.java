@@ -37,8 +37,8 @@ public class ProduitImpl implements InterfaceProduit {
 
         Produit produit = produitMapper.mapDeINPUTAProd(produitINPUT);
 
-        //        verification de produit entrant
-        if (produitINPUT.getImage() == null && produitINPUT.getImageUrl() == null && produitINPUT.getImage().getContentType() == null) {
+ //        verification de produit entrant
+        if (produitINPUT.getImage() == null && produitINPUT.getImageUrl() == null && produitINPUT.getImage().getContentType() == null && produitINPUT.getImage().getContentType().isEmpty()) {
             throw new EmptyException("Selectionner une image");
         }
 
@@ -82,23 +82,28 @@ public class ProduitImpl implements InterfaceProduit {
     }
 
     @Override
-    public void modifierProd(ProduitINPUT produitINPUT) throws EmptyException {
+    public void modifierProd(ProduitINPUT produitINPUT) throws EmptyException, IOException {
 
         Produit produitExist = produitRepository.findById(produitINPUT.getIdProd())
-                .orElseThrow(()-> new EmptyException("Cet produits n'existe pas"));
+                .orElseThrow(() -> new EmptyException("Ce produit n'existe pas"));
 
-        Produit produit = produitMapper.mapDeINPUTAProd(produitINPUT);
-
-        produitExist.setIdProd(produitExist.getIdProd());
-        produitExist.setUtilisateurProd(produitExist.getUtilisateurProd());
+        // Mise à jour des champs de base
         produitExist.setPrixUnitaire(produitINPUT.getPrixUnitaire());
         produitExist.setQuantite(produitINPUT.getQuantite());
         int montant = produitINPUT.getPrixUnitaire() * produitINPUT.getQuantite();
         produitExist.setMontant(montant);
-        produitExist.setDate(produitExist.getDate());
         produitExist.setSupprimerStatus(SupprimerStatus.FALSE);
-        produitMapper.mapDeProdADto(produitRepository.save(produitExist));
+
+        // Mise à jour de l'image uniquement si une nouvelle est fournie
+        if (produitINPUT.getImage() != null && !produitINPUT.getImage().isEmpty()) {
+            produitExist.setImageData(produitINPUT.getImage().getBytes());
+            produitExist.setImageType(produitINPUT.getImage().getContentType());
+            produitExist.setImageName(produitINPUT.getImage().getOriginalFilename());
+        }
+
+        produitRepository.save(produitExist);
     }
+
 
     @Override
     public void suppressionProd(String idProd) throws ProduitNotFoundException {

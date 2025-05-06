@@ -32,12 +32,6 @@ public class ProduitController {
 
     private ProduitRepository produitRepository;
 
-
-    /*@PostMapping("/enregistrerProd")
-    private ProduitDTO creerProd(@Valid @RequestBody ProduitDTO produitDTO) throws MontantQuantiteNullException, ProduitDupicateException, EmptyException {
-        return interfaceProduit.enregistrerProd(produitDTO);
-    }*/
-
     @PostMapping(value = "/enregistrerProd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void creerProd(@RequestPart("produit") String produitJson,
                                 @RequestPart(value = "image", required = false) MultipartFile image)
@@ -56,16 +50,6 @@ public class ProduitController {
          interfaceProduit.enregistrerProd(produitINPUT);
     }
 
-/*    @GetMapping("/image/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String id) {
-        Produit produit = produitRepository.findById(id).orElseThrow();
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(produit.getImageType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + produit.getImageName() + "\"")
-                .body(produit.getImageData());
-    }*/
-
     @GetMapping("/image/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable String id) {
         Produit produit = produitRepository.findById(id)
@@ -83,11 +67,27 @@ public class ProduitController {
     }
 
 
-    @PutMapping("/modifierProd/{idProd}")
-    private void modifierProd(@Valid @RequestBody ProduitINPUT produitINPUT, @PathVariable("idProd") String idProd) throws  EmptyException {
+    @PutMapping(value = "/modifierProd/{idProd}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void modifierProd(
+            @RequestPart("produit") String produitJson,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @PathVariable("idProd") String idProd
+    ) throws IOException, EmptyException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        ProduitINPUT produitINPUT = objectMapper.readValue(produitJson, ProduitINPUT.class);
         produitINPUT.setIdProd(idProd);
-         interfaceProduit.modifierProd(produitINPUT);
+
+        if (image != null && !image.isEmpty()) {
+            produitINPUT.setImage(image);
+        }
+
+        interfaceProduit.modifierProd(produitINPUT);
     }
+
 
     @PutMapping("/supprimerProd")
     private void supprimerProd(@Valid @RequestBody String idProd) throws ProduitNotFoundException{
