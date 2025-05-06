@@ -90,6 +90,8 @@ public class ProduitImpl implements InterfaceProduit {
         // Mise à jour des champs de base
         produitExist.setPrixUnitaire(produitINPUT.getPrixUnitaire());
         produitExist.setQuantite(produitINPUT.getQuantite());
+        produitExist.setDesignation(produitINPUT.getDesignation());
+        produitExist.setNote(produitINPUT.getNote());
         int montant = produitINPUT.getPrixUnitaire() * produitINPUT.getQuantite();
         produitExist.setMontant(montant);
         produitExist.setSupprimerStatus(SupprimerStatus.FALSE);
