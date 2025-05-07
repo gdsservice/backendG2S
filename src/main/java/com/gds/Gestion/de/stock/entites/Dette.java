@@ -39,7 +39,4 @@ public class Dette{
 
     @ManyToOne
     private Client clientDette;
-
-    /*@ManyToMany(fetch = FetchType.EAGER)
-    private List<Produit> produitDette = new ArrayList<>();*/
 }

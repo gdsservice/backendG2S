@@ -1,0 +1,3 @@
+INSERT INTO user_role (name)
+VALUES ('ROLE_ADMIN'), ('ROLE_USER')
+ON DUPLICATE KEY UPDATE name=name;
