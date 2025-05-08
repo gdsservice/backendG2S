@@ -32,7 +32,7 @@ public class GestionDeStockApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 
-		// Vérification et création des rôles
+//		 Vérification et création des rôles
 		List<UserRole> roles = List.of(
 				UserRole.builder().name(TypeRole.SUPER_ADMIN).build(),
 				UserRole.builder().name(TypeRole.ADMIN).build(),
