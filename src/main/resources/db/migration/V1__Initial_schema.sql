@@ -1,3 +1,6 @@
+CREATE TABLE user_role (
+    name VARCHAR(255) PRIMARY KEY
+);
 
 CREATE TABLE IF NOT EXISTS utilisateur (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -10,10 +13,6 @@ CREATE TABLE IF NOT EXISTS utilisateur (
     authentification VARCHAR(255),
     activation VARCHAR(255),
     supprimer_status VARCHAR(255)
-);
-
-CREATE TABLE user_role (
-    name VARCHAR(255) PRIMARY KEY NOT NULL
 );
 
 CREATE TABLE utilisateur_roles (

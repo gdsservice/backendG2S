@@ -33,17 +33,17 @@ public class GestionDeStockApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 
 //		 Vérification et création des rôles
-//		List<UserRole> roles = List.of(
-//				UserRole.builder().name(TypeRole.SUPER_ADMIN).build(),
-//				UserRole.builder().name(TypeRole.ADMIN).build(),
-//				UserRole.builder().name(TypeRole.USER).build()
-//		);
-//
-//		for (UserRole role : roles) {
-//			if (userRoleRepository.findByName(role.getName()) == null) {
-//				userRoleRepository.save(role);
-//			}
-//		}
+		List<UserRole> roles = List.of(
+				UserRole.builder().name(TypeRole.SUPER_ADMIN).build(),
+				UserRole.builder().name(TypeRole.ADMIN).build(),
+				UserRole.builder().name(TypeRole.USER).build()
+		);
+
+		for (UserRole role : roles) {
+			if (userRoleRepository.findByName(role.getName()) == null) {
+				userRoleRepository.save(role);
+			}
+		}
 
 		// Vérification si l'utilisateur SUPER_ADMIN existe déjà
 		// Vérification si l'utilisateur SUPER_ADMIN existe déjà
