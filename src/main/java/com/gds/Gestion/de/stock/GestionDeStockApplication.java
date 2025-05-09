@@ -34,9 +34,9 @@ public class GestionDeStockApplication implements CommandLineRunner{
 
 //		 Vérification et création des rôles
 		List<UserRole> roles = List.of(
-				UserRole.builder().name(TypeRole.ROLE_SUPER_ADMIN).build(),
-				UserRole.builder().name(TypeRole.ROLE_ADMIN).build(),
-				UserRole.builder().name(TypeRole.ROLE_USER).build()
+				UserRole.builder().name(TypeRole.SUPER_ADMIN).build(),
+				UserRole.builder().name(TypeRole.ADMIN).build(),
+				UserRole.builder().name(TypeRole.USER).build()
 		);
 
 		for (UserRole role : roles) {
@@ -61,7 +61,7 @@ public class GestionDeStockApplication implements CommandLineRunner{
 					.authentification(TypeAuth.FALSE)
 					.activation(TypeActive.ACTIVER)
 					.supprimerStatus(SupprimerStatus.FALSE)
-					.roles(Collections.singletonList(userRoleRepository.findByName(TypeRole.ROLE_SUPER_ADMIN)))
+					.roles(Collections.singletonList(userRoleRepository.findByName(TypeRole.SUPER_ADMIN)))
 					.build();
 
 			utilisateurRepository.save(superAdmin);
