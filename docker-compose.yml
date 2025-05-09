@@ -8,7 +8,7 @@ services:
     volumes:
       - /root/certs:/app/certs
     environment:
-      - spring.datasource.url=jdbc:mysql://stock-database:3306/stock_db
+      - spring.datasource.url=jdbc:mysql://stock-database:3306/dbStock
       - spring.datasource.username=stock
       - spring.datasource.password=StockBackend@2024ml
       - JAVA_TOOL_OPTIONS=-Xss200K
@@ -23,7 +23,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: StockBackend@2024ml
-      MYSQL_DATABASE: stock_db
+      MYSQL_DATABASE: dbStock
       MYSQL_USER: stock
       MYSQL_PASSWORD: StockBackend@2024ml
     ports:
