@@ -34,9 +34,9 @@ public class GestionDeStockApplication implements CommandLineRunner{
 
 //		 Vérification et création des rôles
 		List<UserRole> roles = List.of(
-				UserRole.builder().name(TypeRole.SUPER_ADMIN).build(),
-				UserRole.builder().name(TypeRole.ADMIN).build(),
-				UserRole.builder().name(TypeRole.USER).build()
+				UserRole.builder().name(TypeRole.ROLE_SUPER_ADMIN).build(),
+				UserRole.builder().name(TypeRole.ROLE_ADMIN).build(),
+				UserRole.builder().name(TypeRole.ROLE_USER).build()
 		);
 
 		for (UserRole role : roles) {

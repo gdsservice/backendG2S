@@ -20,7 +20,4 @@ public class UserRole {
     @Enumerated(EnumType.STRING)
     private TypeRole name;
 
-    public String getAuthority() {
-        return "ROLE_" + name.name();
-    }
 }
