@@ -61,7 +61,7 @@ public class GestionDeStockApplication implements CommandLineRunner{
 					.authentification(TypeAuth.FALSE)
 					.activation(TypeActive.ACTIVER)
 					.supprimerStatus(SupprimerStatus.FALSE)
-					.roles(Collections.singletonList(userRoleRepository.findByName(TypeRole.SUPER_ADMIN)))
+					.roles(Collections.singletonList(userRoleRepository.findByName(TypeRole.ROLE_SUPER_ADMIN)))
 					.build();
 
 			utilisateurRepository.save(superAdmin);
