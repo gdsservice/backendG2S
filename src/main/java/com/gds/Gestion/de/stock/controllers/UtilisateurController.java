@@ -57,6 +57,9 @@ public class UtilisateurController {
 
     @GetMapping(value = "/roleListe",consumes = { "application/json", "application/xml" })
     private List<UserRole> afficherRole(){
-        return userRoleRepository.findAll();
+        List<UserRole> all = userRoleRepository.findAll();
+        System.out.println(all);
+        System.out.println("############################");
+        return all;
     }
 }
