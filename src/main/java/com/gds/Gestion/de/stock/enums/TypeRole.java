@@ -2,5 +2,5 @@ package com.gds.Gestion.de.stock.enums;
 
 public enum TypeRole {
 
-    SUPER_ADMIN, ADMIN, USER
+    ROLE_SUPER_ADMIN, ROLE_ADMIN, ROLE_USER
 }

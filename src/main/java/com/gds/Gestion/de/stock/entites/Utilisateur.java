@@ -53,7 +53,7 @@ public class Utilisateur implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (UserRole role : this.roles) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+            authorities.add(new SimpleGrantedAuthority(role.getName().name()));
         }
         return authorities;
     }
