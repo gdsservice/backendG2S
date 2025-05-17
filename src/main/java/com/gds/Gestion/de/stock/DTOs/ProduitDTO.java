@@ -35,4 +35,11 @@ public class ProduitDTO {
     private CategorieStockDTO categorieStockProdDTO;
     private Utilisateur utilisateurProd;
 
+    private String slug;
+    private String prixRegulier;
+    private String description;
+    private boolean nouveaute;
+    private boolean vedette;
+    private boolean offreSpeciale;
+
 }

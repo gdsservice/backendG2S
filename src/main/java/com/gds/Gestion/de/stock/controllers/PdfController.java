@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class PdfController {
     private VenteMapper venteMapper;
 
     @GetMapping("/imprimer/{idVente}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN','USER')")
     public ResponseEntity<byte[]> generateVentePdf(@PathVariable String idVente) {
         List<VenteProduit> venteProduitList = venteProduitRepository.findByVenteIdVente(idVente);
 

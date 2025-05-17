@@ -26,6 +26,15 @@ public class ProduitDAO {
     private String imageUrl;
     private LocalDate date;
     private String note;
+    // Nouveau attribut
+    private String slug;
+    private String prixRegulier;
+    private String description;
+    private boolean nouveaute;
+    private boolean vedette;
+    private boolean offreSpeciale;
+//    private boolean plusVendu;
+    // ####################
     private SupprimerStatus supprimerStatus;
     private CategorieStockDTO categorieStockProdDTO;
     private Utilisateur utilisateurProd;

@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,37 +30,39 @@ public class UtilisateurController {
     private UserRoleRepository userRoleRepository;
 
     @PostMapping(value = "/creer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     private UtilisateurDTO creerUser(@Valid @RequestBody UtilisateurDTO utilisateurDTO) throws UtilisateurDuplicateException, EmptyException, EmailIncorrectException {
         return interfaceUtilisateur.creerUser(utilisateurDTO);
     }
 
     @PutMapping("/modifier/{idUser}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     private void modifierUser(@Valid @RequestBody UtilisateurDTO utilisateurDTO, @PathVariable("idUser") Long idUser) throws UtilisateurNotFoundException {
         utilisateurDTO.setId(idUser);
          interfaceUtilisateur.modifierUser(utilisateurDTO);
     }
 
     @PutMapping("/supprimer")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     private void supprimerUser(@Valid @RequestBody Long idUser) throws UtilisateurNotFoundException {
          interfaceUtilisateur.supprimerUser(idUser);
     }
 
     @GetMapping("/user/{idUser}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     private UtilisateurDTO afficherUserId(@Valid @PathVariable("idUser") Long idUser) throws UtilisateurNotFoundException {
         return interfaceUtilisateur.afficherUsersId(idUser);
     }
 
     @GetMapping(value = "/userListe",consumes = { "application/json", "application/xml" })
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     private List<UtilisateurDTO> afficherUsers(){
-        List<UtilisateurDTO> utilisateurDTOS = interfaceUtilisateur.afficherUsers();
-        return utilisateurDTOS;
+        return interfaceUtilisateur.afficherUsers();
     }
 
     @GetMapping(value = "/roleListe",consumes = { "application/json", "application/xml" })
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     private List<UserRole> afficherRole(){
-        List<UserRole> all = userRoleRepository.findAll();
-        System.out.println(all);
-        System.out.println("############################");
-        return all;
+        return userRoleRepository.findAll();
     }
 }

@@ -22,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -33,6 +35,7 @@ public class ProduitController {
     private ProduitRepository produitRepository;
 
     @PostMapping(value = "/enregistrerProd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public void creerProd(@RequestPart("produit") String produitJson,
                                 @RequestPart(value = "image", required = false) MultipartFile image)
             throws IOException, EmptyException, MontantQuantiteNullException, ProduitDupicateException {
@@ -68,6 +71,7 @@ public class ProduitController {
 
 
     @PutMapping(value = "/modifierProd/{idProd}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public void modifierProd(
             @RequestPart("produit") String produitJson,
             @RequestPart(value = "image", required = false) MultipartFile image,
@@ -90,21 +94,33 @@ public class ProduitController {
 
 
     @PutMapping("/supprimerProd")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     private void supprimerProd(@Valid @RequestBody String idProd) throws ProduitNotFoundException{
         interfaceProduit.suppressionProd(idProd);
     }
 
     @GetMapping("/listeProd")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     private List<ProduitDAO> produitDTOList(){
         return interfaceProduit.ListerProd();
     }
 
     @GetMapping("/afficherProd/{idProd}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     private ProduitDAO afficherProd(@Valid @PathVariable String idProd) throws ProduitNotFoundException{
         ProduitDAO produitDAO = interfaceProduit.afficherProd(idProd);
         System.out.println(produitDAO);
         return produitDAO;
     }
+
+    @GetMapping("/recherche")
+    public List<ProduitDAO> rechercherProduits(@RequestParam Map<String, String> params) {
+        return interfaceProduit.rechercherProduits(params);
+    }
+
+
+
+
 
 
 }

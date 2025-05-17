@@ -26,7 +26,6 @@ public class Produit {
     private int prixUnitaire;
     @Column(length = 100)
     private int montant;
-//    private String image;
     private LocalDate date;
     @Column(length = 255)
     private String note;
@@ -39,6 +38,18 @@ public class Produit {
     private String imageType;
 
     private String imageName;
+
+    // Nouveaux champs
+    private String slug;
+    private String prixRegulier;
+
+    @Column(length = 1000)
+    private String description;
+
+    private boolean nouveaute;
+    private boolean vedette;
+    private boolean offreSpeciale;
+//    private boolean plusVendu;
 
 //    SET FOREIGN_KEY_CHECKS=0;
 

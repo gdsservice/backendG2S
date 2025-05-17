@@ -7,6 +7,7 @@ import com.gds.Gestion.de.stock.exceptions.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface InterfaceProduit {
 
@@ -24,5 +25,8 @@ public interface InterfaceProduit {
     ProduitDAO afficherProd(String idProd) throws ProduitNotFoundException;
 
     List<ProduitDAO> ListerProd();
+
+    List<ProduitDAO> rechercherProduits(Map<String, String> params);
+
 
 }

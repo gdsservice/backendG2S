@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -131,4 +132,22 @@ public class ProduitImpl implements InterfaceProduit {
         return produits.stream().map(produit -> produitMapper.mapDeProdADAO(produit))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<ProduitDAO> rechercherProduits(Map<String, String> params) {
+        List<Produit> produits = produitRepository.findAll();
+        // Appliquer les filtres
+        if (params.containsKey("nouveaute") && params.get("nouveaute").equalsIgnoreCase("true")) {
+            produits = produits.stream().filter(Produit::isNouveaute).collect(Collectors.toList());
+        }
+        if (params.containsKey("vedette") && params.get("vedette").equalsIgnoreCase("true")) {
+            produits = produits.stream().filter(Produit::isVedette).collect(Collectors.toList());
+        }
+        if (params.containsKey("offreSpeciale") && params.get("offreSpeciale").equalsIgnoreCase("true")) {
+            produits = produits.stream().filter(Produit::isOffreSpeciale).collect(Collectors.toList());
+        }
+
+        return produits.stream().map(produitMapper::mapDeProdADAO).collect(Collectors.toList());
+    }
+
 }

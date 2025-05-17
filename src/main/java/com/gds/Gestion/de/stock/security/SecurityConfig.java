@@ -21,7 +21,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = false)
 public class SecurityConfig {
 
     private JwtFilter jwtFilter;
@@ -39,64 +39,13 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/login","/produit/image/**",  // Autoriser l'accès aux images
+                        .requestMatchers("/auth/login",
+                                "/produit/image/**",
+                                "/produit/recherche**",
                                 "/error",
                                 "/static/**",
                                 "/assets/**").permitAll()
 
-                        .requestMatchers(POST,"/user/creer").hasRole("SUPER_ADMIN")
-                        .requestMatchers(PUT, "/user/modifier/{idUser}").hasRole("SUPER_ADMIN")
-                        .requestMatchers(DELETE, "/user/supprimer/{idUser}").hasRole("SUPER_ADMIN")
-                        .requestMatchers(GET, "/user/{idUser}").hasRole("SUPER_ADMIN")
-                        .requestMatchers(GET, "/user/userListe").hasRole("SUPER_ADMIN")
-                        .requestMatchers(GET, "/user/userListe").hasRole("SUPER_ADMIN")
-                        .requestMatchers(GET, "/user/roleListe").hasRole("SUPER_ADMIN")
-
-                        .requestMatchers(POST, "/categorie/creerCat").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .requestMatchers(PUT, "/categorie/modifierCat/{idCat}").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .requestMatchers(PUT, "/categorie/supprimerCat").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .requestMatchers(GET, "/categorie/afficherCat/{idCat}").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .requestMatchers(GET, "/categorie/listeCat").hasAnyRole("SUPER_ADMIN", "ADMIN")
-
-                        .requestMatchers(POST, "/produit/enregistrerProd").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .requestMatchers(PUT, "/produit/modifierProd/{idProd}").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .requestMatchers(PUT, "/produit/supprimerProd").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .requestMatchers(GET, "/produit/afficherProd/{idProd}").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .requestMatchers(GET, "/produit/listeProd").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .requestMatchers(GET, "/produit/afficherProdSansStock").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .requestMatchers(GET, "/produit/image/{id}").hasAnyRole("SUPER_ADMIN", "ADMIN")
-
-                        .requestMatchers(POST, "/vente/effectuerVente").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(POST, "/vente/annulerVente").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(PUT, "/vente/modifier/{idVente}").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(DELETE, "/vente/{idVente}").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .requestMatchers(GET, "/vente/afficherVente/{idVente}").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(GET, "/vente/listeVente").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(GET, "/vente/totalVente").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(PUT, "/vente/supprimerVente").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-
-                        .requestMatchers(POST, "/client/ajouterClient").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(GET, "/client/listeClient").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(GET, "/client/totalClient").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(PUT, "/client/modifierClient/{idClient}").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(GET, "/client/afficherClient/{idClient}").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(GET, "/client/supprimerClient").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-
-                        .requestMatchers(POST, "/approvision/creerApprov").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(POST, "/approvision/traiterApprov").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(GET, "/approvision/listeApprov").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(PUT, "/approvision/modifierApprov/{idApprov}").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(GET, "/approvision/afficherApprov/{idApprov}").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(PUT, "/approvision/supprimerApprov").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-
-                        .requestMatchers(POST, "/dette/enregistrerDette").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(GET, "/dette/listeDette").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(PUT, "/dette/modifierDette/{idDette}").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(GET, "/dette/afficherDette/{idDette}").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(PUT, "/dette/payerDette").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-                        .requestMatchers(PUT, "/dette/supprimerDette").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
-
-                        .requestMatchers(GET, "/pdf/imprimer/{idVente}").hasAnyRole("SUPER_ADMIN", "ADMIN", "USER")
 
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

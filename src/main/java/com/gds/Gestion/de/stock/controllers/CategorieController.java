@@ -8,6 +8,7 @@ import com.gds.Gestion.de.stock.exceptions.EmptyException;
 import com.gds.Gestion.de.stock.services.InterfaceCategorie;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,27 +21,32 @@ public class CategorieController {
     private InterfaceCategorie interfaceCategorie;
 
     @PostMapping("/creerCat")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     private CategorieStockDTO save(@Valid @RequestBody CategorieStockDTO categorieStockDTO) throws CategorieDuplicateException, EmptyException {
         return interfaceCategorie.creerCat(categorieStockDTO);
     };
 
     @PutMapping("/modifierCat/{idCat}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     private CategorieStockDTO update(@Valid @RequestBody CategorieStockDTO categorieStockDTO, @PathVariable("idCat") Long idCat) throws CategorieDuplicateException, EmptyException {
         categorieStockDTO.setIdCat(idCat);
         return interfaceCategorie.modifierCat(categorieStockDTO);
     }
 
     @GetMapping("/afficherCat/{idCat}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     private CategorieStockDTO getIdCat(@Valid @PathVariable("idCat") Long idCat) throws CategorieNotFoundException {
         return interfaceCategorie.afficher(idCat);
     }
 
     @PutMapping("/supprimerCat")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     private void delete(@Valid @RequestBody Long idCat) throws CategorieNotFoundException {
         interfaceCategorie.supprimerCat(idCat);
     }
 
     @GetMapping(value="/listeCat" , consumes = { "application/json", "application/xml" })
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     private List<CategorieStockDTO> getAllCat(  ) {
         return interfaceCategorie.listCat();
     }
