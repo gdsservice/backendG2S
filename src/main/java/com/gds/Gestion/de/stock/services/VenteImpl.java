@@ -1,11 +1,9 @@
 package com.gds.Gestion.de.stock.services;
 
 
-import com.gds.Gestion.de.stock.DAOs.ProduitDAO;
 import com.gds.Gestion.de.stock.DAOs.VenteDAO;
-import com.gds.Gestion.de.stock.DTOs.ProduitDTO;
 import com.gds.Gestion.de.stock.DTOs.VenteDTO;
-import com.gds.Gestion.de.stock.Input.VenteInput;
+import com.gds.Gestion.de.stock.Input.VenteINPUT;
 import com.gds.Gestion.de.stock.entites.*;
 import com.gds.Gestion.de.stock.enums.StatusVente;
 import com.gds.Gestion.de.stock.enums.SupprimerStatus;
@@ -59,7 +57,7 @@ public class VenteImpl implements InterfaceVente {
 
     //    ajouter une ventenksjabjnkcsnnkw mdvc ,sd mscmscmsd
     @Override
-    public void effectuerVente(VenteInput venteInput) throws Exception {
+    public void effectuerVente(VenteINPUT venteInput) throws Exception {
 
 //        // Validation des entrées
         if (venteInput.getListVenteProduit().stream().map(VenteProduit::getProduit).collect(Collectors.toList()).isEmpty()) {

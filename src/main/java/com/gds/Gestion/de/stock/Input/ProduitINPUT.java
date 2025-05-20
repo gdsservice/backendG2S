@@ -20,6 +20,17 @@ public class ProduitINPUT {
     private int quantite;
     private int prixUnitaire;
     private int montant;
+
+    // Nouveau attribut
+//    private String slug;
+    private String prixRegulier;
+    private String description;
+    private boolean nouveaute;
+    private boolean vedette;
+    private boolean offreSpeciale;
+    private boolean plusVendu;
+    private boolean publier;
+
     private MultipartFile image;
     private String imageUrl;
     private LocalDate date;

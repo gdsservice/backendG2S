@@ -49,7 +49,9 @@ public class Produit {
     private boolean nouveaute;
     private boolean vedette;
     private boolean offreSpeciale;
-//    private boolean plusVendu;
+    private boolean plusVendu;
+    private boolean publier;
+
 
 //    SET FOREIGN_KEY_CHECKS=0;
 

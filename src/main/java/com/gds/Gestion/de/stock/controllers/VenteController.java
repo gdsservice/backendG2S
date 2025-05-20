@@ -2,7 +2,7 @@ package com.gds.Gestion.de.stock.controllers;
 
 import com.gds.Gestion.de.stock.DAOs.VenteDAO;
 import com.gds.Gestion.de.stock.DTOs.VenteDTO;
-import com.gds.Gestion.de.stock.Input.VenteInput;
+import com.gds.Gestion.de.stock.Input.VenteINPUT;
 import com.gds.Gestion.de.stock.exceptions.*;
 import com.gds.Gestion.de.stock.services.InterfaceVente;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ public class VenteController {
 
     @PostMapping("/effectuerVente")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN','USER')")
-    public void effectuerVente(@Valid @RequestBody VenteInput venteInput) throws Exception {
+    public void effectuerVente(@Valid @RequestBody VenteINPUT venteInput) throws Exception {
         interfaceVente.effectuerVente(venteInput);
     }
 

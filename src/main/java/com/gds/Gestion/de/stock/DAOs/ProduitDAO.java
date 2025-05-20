@@ -33,6 +33,8 @@ public class ProduitDAO {
     private boolean nouveaute;
     private boolean vedette;
     private boolean offreSpeciale;
+    private boolean plusVendu;
+    private boolean publier;
 //    private boolean plusVendu;
     // ####################
     private SupprimerStatus supprimerStatus;

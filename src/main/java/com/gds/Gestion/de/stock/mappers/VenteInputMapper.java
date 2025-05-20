@@ -1,9 +1,7 @@
 package com.gds.Gestion.de.stock.mappers;
 
-import com.gds.Gestion.de.stock.DTOs.VenteDTO;
-import com.gds.Gestion.de.stock.Input.VenteInput;
+import com.gds.Gestion.de.stock.Input.VenteINPUT;
 import com.gds.Gestion.de.stock.entites.Vente;
-import com.gds.Gestion.de.stock.entites.VenteProduit;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +36,7 @@ public class VenteInputMapper {
 //        return venteInput;
 //    }
 
-    public Vente mapDeVenteInputAVente(VenteInput venteInput) {
+    public Vente mapDeVenteInputAVente(VenteINPUT venteInput) {
         Vente vente = new Vente();
         BeanUtils.copyProperties(venteInput, vente);
         vente.setClientsVente(venteInput.getVente().getClientsVente());

@@ -8,6 +8,7 @@ import com.gds.Gestion.de.stock.entites.Produit;
 import com.gds.Gestion.de.stock.entites.Utilisateur;
 import com.gds.Gestion.de.stock.enums.SupprimerStatus;
 import com.gds.Gestion.de.stock.exceptions.*;
+import com.gds.Gestion.de.stock.mappers.CategorieMapper;
 import com.gds.Gestion.de.stock.mappers.ProduitMapper;
 import com.gds.Gestion.de.stock.repositories.ProduitRepository;
 import jakarta.transaction.Transactional;
@@ -31,6 +32,7 @@ public class ProduitImpl implements InterfaceProduit {
 
     private ProduitRepository produitRepository;
     private ProduitMapper produitMapper;
+    private CategorieMapper categorieMapper;
 
 
     @Override
@@ -60,6 +62,7 @@ public class ProduitImpl implements InterfaceProduit {
         produit.setIdProd("GDS "+UUID.randomUUID());
         produit.setDate(LocalDate.now());
         produit.setSupprimerStatus(SupprimerStatus.FALSE);
+        produit.setNouveaute(true);
         Produit save = produitRepository.save(produit);
         ProduitINPUT produitINPUT1 = produitMapper.mapDeProdAINPUT(save);
         produitINPUT1.setImageUrl("/produit/image/" + save.getIdProd());
@@ -93,6 +96,14 @@ public class ProduitImpl implements InterfaceProduit {
         produitExist.setQuantite(produitINPUT.getQuantite());
         produitExist.setDesignation(produitINPUT.getDesignation());
         produitExist.setNote(produitINPUT.getNote());
+        produitExist.setNouveaute(produitINPUT.isNouveaute());
+        produitExist.setOffreSpeciale(produitINPUT.isOffreSpeciale());
+        produitExist.setPlusVendu(produitINPUT.isPlusVendu());
+        produitExist.setVedette(produitINPUT.isVedette());
+        produitExist.setPublier(produitINPUT.isPublier());
+        produitExist.setDescription(produitINPUT.getDescription());
+        produitExist.setPrixRegulier(produitINPUT.getPrixRegulier());
+        produitExist.setCategorieStock(categorieMapper.mapDeDtoACategorie(produitINPUT.getCategorieStockProdDTO()));
         int montant = produitINPUT.getPrixUnitaire() * produitINPUT.getQuantite();
         produitExist.setMontant(montant);
         produitExist.setSupprimerStatus(SupprimerStatus.FALSE);

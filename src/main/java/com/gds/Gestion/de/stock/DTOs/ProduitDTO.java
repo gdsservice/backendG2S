@@ -41,5 +41,7 @@ public class ProduitDTO {
     private boolean nouveaute;
     private boolean vedette;
     private boolean offreSpeciale;
+    private boolean plusVendu;
+    private boolean publier;
 
 }

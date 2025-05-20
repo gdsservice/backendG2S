@@ -2,18 +2,11 @@ package com.gds.Gestion.de.stock.mappers;
 
 
 import com.gds.Gestion.de.stock.DTOs.ClientDTO;
-import com.gds.Gestion.de.stock.DTOs.ProduitDTO;
-import com.gds.Gestion.de.stock.Input.ClientInput;
+import com.gds.Gestion.de.stock.Input.ClientINPUT;
 import com.gds.Gestion.de.stock.entites.Client;
-import com.gds.Gestion.de.stock.entites.Produit;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ClientMapper {
@@ -34,7 +27,7 @@ public class ClientMapper {
         return clientDTO;
     }
 
-    public Client mapDeClientInputAClient(ClientInput clientInput) {
+    public Client mapDeClientInputAClient(ClientINPUT clientInput) {
         Client client = new Client();
         BeanUtils.copyProperties(clientInput, client);
         return client;
