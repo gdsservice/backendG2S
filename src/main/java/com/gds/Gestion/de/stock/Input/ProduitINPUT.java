@@ -21,7 +21,7 @@ public class ProduitINPUT {
     private int prixUnitaire;
     private int montant;
 
-    // Nouveau attribut
+    // Nouveau attributbbbb
 //    private String slug;
     private String prixRegulier;
     private String description;
