@@ -1,14 +1,17 @@
 package com.gds.Gestion.de.stock.Input;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gds.Gestion.de.stock.DTOs.CategorieStockDTO;
 import com.gds.Gestion.de.stock.entites.Utilisateur;
 import com.gds.Gestion.de.stock.enums.SupprimerStatus;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +25,7 @@ public class ProduitINPUT {
     private int montant;
 
     // Nouveau attributbbbb
-//    private String slug;
+    private String slug;
     private String prixRegulier;
     private String description;
     private boolean nouveaute;
@@ -31,8 +34,8 @@ public class ProduitINPUT {
     private boolean plusVendu;
     private boolean publier;
 
-    private MultipartFile image;
-    private String imageUrl;
+    private List<MultipartFile> images;
+    private List<String> imageUrls;
     private LocalDate date;
     private String note;
     private SupprimerStatus supprimerStatus;

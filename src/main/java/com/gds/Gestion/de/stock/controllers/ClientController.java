@@ -23,7 +23,7 @@ public class ClientController {
     @PostMapping("/ajouterClient")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN','USER')")
     private ClientDTO ajouterClient(@Valid @RequestBody ClientDTO clientDTO) throws ClientDupicateException, EmailIncorrectException {
-        return interfaceClient.ajouterClient(clientDTO);
+         return interfaceClient.ajouterClient(clientDTO);
     }
 
     @PutMapping("/modifierClient/{idClient}")

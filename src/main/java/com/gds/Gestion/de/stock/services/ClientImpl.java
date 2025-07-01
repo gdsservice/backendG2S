@@ -37,22 +37,29 @@ public class ClientImpl implements InterfaceClient {
     @Override
     public ClientDTO ajouterClient(ClientDTO clientDTO) throws ClientDupicateException {
         Client client = clientMapper.mapDeDtoAClient(clientDTO);
-        Client clientByTelephone = clientRepository.findByTelephone(clientDTO.getTelephone() );
+        List<Client> clientByTelephone = clientRepository.findByTelephone(clientDTO.getTelephone());
 
-        if(clientByTelephone != null)
-            throw new ClientDupicateException(clientByTelephone.getTelephone()+" existe deja.");
+        if (clientDTO.isPublier()) {
+            client.setIdClient("GDS" + UUID.randomUUID());
+            client.setDateAjout(LocalDate.now());
+            client.setUtilisateurClient(null);
+            client.setPublier(true);
+            client.setSupprimerStatus(SupprimerStatus.FALSE);
+        } else if (clientByTelephone.isEmpty()) {
+            Utilisateur userConnecter = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            client.setUtilisateurClient(userConnecter);
+            client.setDateAjout(LocalDate.now());
+            client.setIdClient("GDS" + UUID.randomUUID());
+            client.setPublier(false);
+            client.setSupprimerStatus(SupprimerStatus.FALSE);
+        } else {
+            throw new ClientDupicateException(clientByTelephone.get(0).getTelephone() + " existe déjà.");
+        }
 
-    /*    if (!client.getEmail().contains("@") && !client.getEmail().contains("."))
-            throw new EmailIncorrectException("Votre email "+ clientDTO.getEmail()+" est incorrect");*/
-
-        Utilisateur userConnecter = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        client.setUtilisateurClient(userConnecter);
-        client.setDateAjout(LocalDate.now());
-        client.setIdClient("GDS"+UUID.randomUUID());
-        client.setSupprimerStatus(SupprimerStatus.FALSE);
-        Client save = clientRepository.save(client);
-        return clientMapper.mapDeClientADto(save);
+        Client savedClient = clientRepository.save(client);
+        return clientMapper.mapDeClientADto(savedClient);
     }
+
 
     @Override
     public ClientDTO modifierClient(ClientDTO clientDTO) throws ClientNotFoundException {

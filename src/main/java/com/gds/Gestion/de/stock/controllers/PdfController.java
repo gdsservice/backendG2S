@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.*;
 import java.util.List;
 
 @RestController
@@ -38,5 +39,40 @@ public class PdfController {
 
             return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
 
-    }}
+    }
+
+//    @GetMapping("/imprimer/{idVente}")
+//    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN','USER')")
+//    public ResponseEntity<String> imprimerTicket(@PathVariable String idVente) {
+//        List<VenteProduit> venteProduitList = venteProduitRepository.findByVenteIdVente(idVente);
+//
+//        VenteDAO venteDAO = new VenteDAO();
+//        venteDAO.setVente(venteProduitList.get(0).getVente());
+//        venteDAO.setVenteProduitList(venteProduitList);
+//
+//        String ticketTexte = pdfService.generateTicketTexte(venteDAO);
+//
+//        // Impression en local
+//        try {
+//            PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
+//            if (printService != null) {
+//                DocPrintJob job = printService.createPrintJob();
+//                Doc doc = new SimpleDoc(ticketTexte.getBytes(), DocFlavor.BYTE_ARRAY.AUTOSENSE, null);
+//                job.print(doc, null);
+//            } else {
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                        .body("Aucune imprimante trouvée.");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Erreur d'impression : " + e.getMessage());
+//        }
+//
+//        return ResponseEntity.ok("Ticket imprimé avec succès.");
+//    }
+
+
+
+}
 

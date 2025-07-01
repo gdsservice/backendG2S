@@ -12,7 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VenteINPUT {
-
     private Vente vente;
     private List<VenteProduit> listVenteProduit;
 }

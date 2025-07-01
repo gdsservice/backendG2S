@@ -23,6 +23,7 @@ public class ClientDTO {
     private String telephone;
     private String email;
     private LocalDate dateAjout;
+    private boolean publier;
     private SupprimerStatus supprimerStatus;
     private Utilisateur utilisateurClient;
 

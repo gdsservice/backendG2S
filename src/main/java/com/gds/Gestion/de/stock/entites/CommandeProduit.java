@@ -1,6 +1,6 @@
 package com.gds.Gestion.de.stock.entites;
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,20 +9,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "vente_produit")
-public class VenteProduit {
+public class CommandeProduit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 100)
     private int montant;
-    @Column(length = 10)
+    @Column(length = 100)
     private int quantite;
-    @Column(length = 10)
-    private int reduction;
     @ManyToOne
+    @JoinColumn(name = "produit_id")
     private Produit produit;
     @ManyToOne
-    private Vente vente;
+    @JoinColumn(name = "commande_id")
+    private Commande commande;
 }

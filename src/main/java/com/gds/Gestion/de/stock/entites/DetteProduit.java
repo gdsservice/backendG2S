@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "dette_produit")
 public class DetteProduit {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_dette_produit")
     private Long idDetteProduit;
     @Column(length = 100)
     private int montant;

@@ -18,25 +18,29 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "approvision")
 public class Approvision {
 
     @Id
+    @Column(name = "id_approv")
     private String idApprov;
     @Column(length = 60)
     private String designation;
     @Column(length = 10)
     private int quantite;
-    @Column(length = 100)
+    @Column(name = "prix_unitaire",length = 100)
     private int prixUnitaire;
     @Column(length = 100)
     private int montant;
     @Column(length = 10)
     private double cbm;
-    @Column(length = 100)
+    @Column(name = "frais_transit")
     private int fraisTransit;
+    @Column(name = "date_achat")
     private LocalDate dateAchat;
+    @Column(name = "date_arriver")
     private LocalDate dateArriver;
-    @Column(length = 60)
+    @Column(name = "adresse_frs")
     private String adresseFrs;
     private String image;
     @Enumerated(EnumType.STRING)
@@ -44,6 +48,7 @@ public class Approvision {
     @Column(length = 100)
     private String description;
     @Enumerated(EnumType.STRING)
+    @Column(name = "supprimer_status")
     private SupprimerStatus supprimerStatus;
 
     @ManyToOne

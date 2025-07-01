@@ -1,4 +1,4 @@
-package com.gds.Gestion.de.stock.DTOs;
+package com.gds.Gestion.de.stock.DAOs;
 
 
 import com.gds.Gestion.de.stock.enums.SupprimerStatus;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategorieStockDTO {
+public class CategorieStockDAO {
 
 
     private Long idCat;

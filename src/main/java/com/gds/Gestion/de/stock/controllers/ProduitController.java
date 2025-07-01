@@ -1,21 +1,18 @@
 package com.gds.Gestion.de.stock.controllers;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gds.Gestion.de.stock.DAOs.ProduitDAO;
-import com.gds.Gestion.de.stock.DTOs.CategorieStockDTO;
-import com.gds.Gestion.de.stock.DTOs.ProduitDTO;
 import com.gds.Gestion.de.stock.Input.ProduitINPUT;
-import com.gds.Gestion.de.stock.entites.Produit;
 import com.gds.Gestion.de.stock.exceptions.*;
 import com.gds.Gestion.de.stock.repositories.ProduitRepository;
 import com.gds.Gestion.de.stock.services.InterfaceProduit;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -34,62 +30,45 @@ public class ProduitController {
 
     private ProduitRepository produitRepository;
 
-    @PostMapping(value = "/enregistrerProd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/enregistrerProd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE+";charset=UTF-8")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
-    public void creerProd(@RequestPart("produit") String produitJson,
-                                @RequestPart(value = "image", required = false) MultipartFile image)
+    public void creerProd(
+            @RequestPart("produit") String produitJson,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images)
             throws IOException, EmptyException, MontantQuantiteNullException, ProduitDupicateException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        ProduitINPUT produitINPUT = objectMapper.readValue(produitJson, ProduitINPUT.class);
+        // Supprimez le champ images du JSON avant désérialisation
+        JsonNode jsonNode = objectMapper.readTree(produitJson);
+        ((ObjectNode) jsonNode).remove("images");
 
-        if (image != null && !image.isEmpty()) {
-            produitINPUT.setImage(image);
-        }
+        ProduitINPUT produitINPUT = objectMapper.treeToValue(jsonNode, ProduitINPUT.class);
 
-         interfaceProduit.enregistrerProd(produitINPUT);
+        interfaceProduit.enregistrerProd(produitINPUT, images);
     }
 
-    @GetMapping("/image/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String id) {
-        Produit produit = produitRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produit introuvable"));
-
-        String contentType = produit.getImageType();
-        if (contentType == null || contentType.isBlank()) {
-            contentType = "application/octet-stream";
-        }
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + produit.getImageName() + "\"")
-                .body(produit.getImageData());
-    }
-
-
-    @PutMapping(value = "/modifierProd/{idProd}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/modifierProd/{idProd}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE+";charset=UTF-8")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public void modifierProd(
             @RequestPart("produit") String produitJson,
-            @RequestPart(value = "image", required = false) MultipartFile image,
-            @PathVariable("idProd") String idProd
-    ) throws IOException, EmptyException {
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
+            @PathVariable("idProd") String idProd) throws IOException, EmptyException, ProduitNotFoundException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        ProduitINPUT produitINPUT = objectMapper.readValue(produitJson, ProduitINPUT.class);
+        // Supprimez le champ images du JSON avant désérialisation
+        JsonNode jsonNode = objectMapper.readTree(produitJson);
+        ((ObjectNode) jsonNode).remove("images");
+
+        ProduitINPUT produitINPUT = objectMapper.treeToValue(jsonNode, ProduitINPUT.class);
         produitINPUT.setIdProd(idProd);
 
-        if (image != null && !image.isEmpty()) {
-            produitINPUT.setImage(image);
-        }
-
-        interfaceProduit.modifierProd(produitINPUT);
+        interfaceProduit.modifierProd(produitINPUT, images);
     }
 
 
@@ -99,7 +78,7 @@ public class ProduitController {
         interfaceProduit.suppressionProd(idProd);
     }
 
-    @GetMapping("/listeProd")
+    @GetMapping(value = "/listeProd", produces = "application/json;charset=UTF-8")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     private List<ProduitDAO> produitDTOList(){
         return interfaceProduit.ListerProd();
@@ -108,14 +87,26 @@ public class ProduitController {
     @GetMapping("/afficherProd/{idProd}")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     private ProduitDAO afficherProd(@Valid @PathVariable String idProd) throws ProduitNotFoundException{
-        ProduitDAO produitDAO = interfaceProduit.afficherProd(idProd);
-        System.out.println(produitDAO);
-        return produitDAO;
+        return interfaceProduit.afficherProd(idProd);
     }
+
+    @GetMapping("/slug/{slug}")
+    private ProduitDAO afficherSlug(@Valid @PathVariable String slug) throws ProduitNotFoundException, EmptyException {
+        return interfaceProduit.afficherSlug(slug);
+    }
+
 
     @GetMapping("/recherche")
     public List<ProduitDAO> rechercherProduits(@RequestParam Map<String, String> params) {
         return interfaceProduit.rechercherProduits(params);
+    }
+
+    @GetMapping("/limite")
+    public List<ProduitDAO> listProduitLimit(
+            @RequestParam(name = "min", defaultValue = "1") int min,
+            @RequestParam(name = "max", defaultValue = "20") int max
+    ){
+       return interfaceProduit.listProduitLimit(min, max);
     }
 
 

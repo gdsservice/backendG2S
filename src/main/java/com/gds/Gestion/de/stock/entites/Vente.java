@@ -15,9 +15,11 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "vente")
 public class Vente {
 
     @Id
+    @Column(name = "id_vente")
     private String idVente;
     @Column(length = 50)
 //    private String description;
@@ -29,10 +31,12 @@ public class Vente {
     private int reduction;
     @Column(length = 100)
     private String note;
+    @Column(name = "date_vente")
     private LocalDate dateVente;
     @Enumerated(EnumType.STRING)
     private StatusVente status;
     @Enumerated(EnumType.STRING)
+    @Column(name = "supprimer_status")
     private SupprimerStatus supprimerStatus;
 
     @ManyToOne

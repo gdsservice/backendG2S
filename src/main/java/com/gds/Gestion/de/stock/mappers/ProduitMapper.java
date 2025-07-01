@@ -5,6 +5,7 @@ import com.gds.Gestion.de.stock.DAOs.ProduitDAO;
 import com.gds.Gestion.de.stock.DTOs.ProduitDTO;
 import com.gds.Gestion.de.stock.Input.ProduitINPUT;
 import com.gds.Gestion.de.stock.entites.Produit;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class ProduitMapper {
 
-    @Autowired
+//    @Autowired
     private CategorieMapper categorieMapper;
-    private UtilisateurMapper utilisateurMapper;
 
     public ProduitDTO mapDeProdADto(Produit produit) {
         ProduitDTO produitDTO = new ProduitDTO();

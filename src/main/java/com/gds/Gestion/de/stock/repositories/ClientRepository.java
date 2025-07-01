@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ClientRepository extends JpaRepository<Client, String> {
-    Client findByTelephone(String telephone);
+    List<Client> findByTelephone(String telephone);
 
     @Query(value = "SELECT COUNT(*) FROM client", nativeQuery = true)
     long countTotalClient();

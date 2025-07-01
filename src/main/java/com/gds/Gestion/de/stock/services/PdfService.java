@@ -3,6 +3,7 @@ package com.gds.Gestion.de.stock.services;
 import com.gds.Gestion.de.stock.DAOs.VenteDAO;
 import com.gds.Gestion.de.stock.entites.VenteProduit;
 import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.SolidBorder;
@@ -23,93 +24,129 @@ public class PdfService {
     public byte[] generateVentePdf(VenteDAO venteDAO) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             PdfWriter writer = new PdfWriter(out);
-            PdfDocument pdf = new PdfDocument(writer);
-            Document document = new Document(pdf);
 
-            //Couleur et format
+            // Format A8 : 52mm x 74mm ≈ 147.4pt x 209.8pt
+            PdfDocument pdf = new PdfDocument(writer);
+            pdf.setDefaultPageSize(new PageSize(147.4f, 209.8f)); // format A8
+
+            Document document = new Document(pdf);
             DeviceRgb roseFonce = new DeviceRgb(255, 105, 180); // Rose foncé
 
-            // En-tête de l'entreprise
             Paragraph header = new Paragraph()
                     .add("BAMAKO GADGETS")
                     .setBold()
-                    .setFontSize(20)
+                    .setFontSize(8)
                     .setFontColor(roseFonce)
-                    .setMarginBottom(10)
+                    .setMarginBottom(4)
                     .setTextAlignment(TextAlignment.CENTER);
 
             document.add(header);
 
-            document.add(new Paragraph("Votre fournisseur de confiance en Appareils Informatiques, Électroniques, \n" +
-                    ("Électroménagers, Quincailleries, Accessoires de Voiture et Divers. \n" +
-                            "Bamako Coura, non loin de l'Hôtel de Nuima Beleza,\n " +
-                            "vers la rue Mamadou Konaté, rue 352, porte 121, Résidence DEBE. \n " +
-                            " Téléphone : +223 84 00 89 69 / 83 52 28 56 / 77 21 20 47 \n " +
-                            "Email : g2sservices1@gmail.com | Site web : www.bamakogadgets.com"
-                    ))
+            document.add(new Paragraph("Appareils, Électroniques,\nÉlectroménagers, Quincaillerie, Voiture")
                     .setTextAlignment(TextAlignment.CENTER)
-                    .setMarginBottom(30)
-                    .setFontSize(10));
+                    .setFontSize(5)
+                    .setMarginBottom(4));
 
-            // 🏠 Informations du Client
-            // Détails de la Vente
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.FRENCH);
+            document.add(new Paragraph("Adresse : Bamako Coura, Hôtel Nuima Beleza\nTel : +22384008969\nEmail : g2sservices1@gmail.com")
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setFontSize(5)
+                    .setMarginBottom(6));
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.FRENCH);
             String dateVenteFormat = venteDAO.getVente().getDateVente().format(formatter);
-            document.add(new Paragraph("Doit : " + venteDAO.getVente().getClientsVente().getPrenom() + " " + venteDAO.getVente().getClientsVente().getNom()
-                    + "\nTéléphone : " + venteDAO.getVente().getClientsVente().getTelephone()
-                    + "\nDate de vente : " + dateVenteFormat)
-                            .setBold()
-                    .setFontSize(10));
 
-            // Ajout d'un espace après l'en-tête
-            document.add(new Paragraph("\n"));
+            document.add(new Paragraph("Client : " + venteDAO.getVente().getClientsVente().getPrenom() + " " + venteDAO.getVente().getClientsVente().getNom()
+                    + "\nTel : " + venteDAO.getVente().getClientsVente().getTelephone()
+                    + "\nDate : " + dateVenteFormat)
+                    .setFontSize(5)
+                    .setBold()
+                    .setMarginBottom(5));
 
+            float[] columnWidths = {50f, 20f, 30f, 40f};
+            Table table = new Table(columnWidths).setFontSize(5);
 
-            // Création du tableau avec 4 colonnes
-            float[] columnWidths = {200f, 200f, 200f, 200f};
-            Table table = new Table(columnWidths);
+            table.addCell(new Cell().add(new Paragraph("Désignation").setBold()));
+            table.addCell(new Cell().add(new Paragraph("Qté").setBold()));
+            table.addCell(new Cell().add(new Paragraph("P.U").setBold()));
+            table.addCell(new Cell().add(new Paragraph("Montant").setBold()));
 
-            table.addCell(new Cell().add(new Paragraph("Désignation").setFontSize(10).setBold()));
-            table.addCell(new Cell().add(new Paragraph("Quantité").setFontSize(10).setBold()));
-            table.addCell(new Cell().add(new Paragraph("Prix Unitaire (FCFA)").setFontSize(10).setBold()));
-            table.addCell(new Cell().add(new Paragraph("Montant (FCFA)").setFontSize(10).setBold()));
-
-            // Ajout des produits au tableau
             for (VenteProduit venteProduit : venteDAO.getVenteProduitList()) {
-                table.addCell(new Cell().add(new Paragraph(venteProduit.getProduit().getDesignation()).setFontSize(10)));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(venteProduit.getQuantite())).setFontSize(10)));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(venteProduit.getProduit().getPrixUnitaire())).setFontSize(10)));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(venteProduit.getMontant()))).setFontSize(10));
+                table.addCell(new Cell().add(new Paragraph(venteProduit.getProduit().getDesignation())));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(venteProduit.getQuantite()))));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(venteProduit.getProduit().getPrixUnitaire()))));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(venteProduit.getMontant()))));
             }
 
-            // Ajout du tableau au document
-            document.add(table);
+            document.add(table.setMarginBottom(4));
 
-            // Définition de la largeur des colonnes
-            float[] clientVenteColumnWidths = {257f};
-            Table clientVenteTable = new Table(clientVenteColumnWidths)
-                    .setTextAlignment(TextAlignment.LEFT)
-                    .setHorizontalAlignment(com.itextpdf.layout.property.HorizontalAlignment.RIGHT);
+            float[] totalColumnWidths = {120f};
+            Table totalTable = new Table(totalColumnWidths)
+                    .setFontSize(5)
+                    .setTextAlignment(TextAlignment.RIGHT);
 
-            // Réduction
-            clientVenteTable.addCell(new Cell()
-                    .add(new Paragraph("Réduction :     " + venteDAO.getVente().getReduction() + "  FCFA").setBold().setFontSize(10).setMargin(5))
-                    .setBorderBottom(new SolidBorder(1)));
+            totalTable.addCell(new Cell()
+                    .add(new Paragraph("Réduction : " + venteDAO.getVente().getReduction() + " FCFA").setBold())
+                    .setBorderBottom(new SolidBorder(0.3f)));
 
-            // 🏠 Montant à payer
-            clientVenteTable.addCell(new Cell()
-                    .add(new Paragraph("Montant à payer :     " + venteDAO.getVente().getMontant() + "  FCFA").setBold().setFontSize(10).setMargin(5)));
+            totalTable.addCell(new Cell()
+                    .add(new Paragraph("Total à payer : " + venteDAO.getVente().getMontant() + " FCFA").setBold()));
 
-            // Ajout du tableau au document
-            document.add(clientVenteTable);
-
-
-
+            document.add(totalTable);
             document.close();
+
             return out.toByteArray();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
+//    public String generateTicketTexte(VenteDAO venteDAO) {
+//        StringBuilder ticket = new StringBuilder();
+//
+//        ticket.append(center("BAMAKO GADGETS")).append("\n");
+//        ticket.append(center("Appareils, Électroniques")).append("\n");
+//        ticket.append(center("Électroménagers, Quincaillerie")).append("\n");
+//        ticket.append(center("Tel: +22384008969")).append("\n");
+//        ticket.append("--------------------------------\n");
+//
+//        ticket.append("Client : ").append(venteDAO.getVente().getClientsVente().getPrenom())
+//                .append(" ").append(venteDAO.getVente().getClientsVente().getNom()).append("\n");
+//        ticket.append("Tel    : ").append(venteDAO.getVente().getClientsVente().getTelephone()).append("\n");
+//        ticket.append("Date   : ").append(venteDAO.getVente().getDateVente().toString()).append("\n");
+//        ticket.append("--------------------------------\n");
+//
+//        ticket.append(String.format("%-12s %3s %5s %7s\n", "Produit", "Qté", "P.U", "Total"));
+//        ticket.append("--------------------------------\n");
+//
+//        for (VenteProduit vp : venteDAO.getVenteProduitList()) {
+//            String designation = vp.getProduit().getDesignation();
+//            int qte = vp.getQuantite();
+//            double pu = vp.getProduit().getPrixUnitaire();
+//            double montant = vp.getMontant();
+//
+//            ticket.append(String.format("%-12s %3d %5.0f %7.0f\n", shorten(designation, 12), qte, pu, montant));
+//        }
+//
+//        ticket.append("--------------------------------\n");
+//        ticket.append("Réduction : ").append(venteDAO.getVente().getReduction()).append(" FCFA\n");
+//        ticket.append("Total     : ").append(venteDAO.getVente().getMontant()).append(" FCFA\n");
+//        ticket.append("--------------------------------\n");
+//        ticket.append(center("Merci pour votre achat !")).append("\n");
+//
+//        return ticket.toString();
+//    }
+//
+//    private String center(String text) {
+//        int width = 32;
+//        int padding = (width - text.length()) / 2;
+//        return " ".repeat(Math.max(padding, 0)) + text;
+//    }
+//
+//    private String shorten(String text, int maxLength) {
+//        return text.length() > maxLength ? text.substring(0, maxLength - 1) + "…" : text;
+//    }
+
+
+
 }

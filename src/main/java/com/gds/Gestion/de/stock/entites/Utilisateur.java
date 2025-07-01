@@ -21,6 +21,7 @@ import java.util.*;
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
+@Table(name = "utilisateur")
 public class Utilisateur implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +42,7 @@ public class Utilisateur implements UserDetails {
     @Enumerated(EnumType.STRING)
     private TypeActive activation;
     @Enumerated(EnumType.STRING)
+    @Column(name = "supprimer_status")
     private SupprimerStatus supprimerStatus;
 
     @Enumerated(EnumType.STRING)
