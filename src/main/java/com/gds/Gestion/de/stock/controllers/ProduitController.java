@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -30,12 +31,14 @@ public class ProduitController {
 
     private ProduitRepository produitRepository;
 
-    @PostMapping(value = "/enregistrerProd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE+";charset=UTF-8")
+    @PostMapping(value = "/enregistrerProd")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public void creerProd(
-            @RequestPart("produit") String produitJson,
+            @RequestPart("produit") byte[] produitJsonBytes,
             @RequestPart(value = "images", required = false) List<MultipartFile> images)
             throws IOException, EmptyException, MontantQuantiteNullException, ProduitDupicateException {
+
+        String produitJson = new String(produitJsonBytes, StandardCharsets.UTF_8);
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -50,12 +53,14 @@ public class ProduitController {
         interfaceProduit.enregistrerProd(produitINPUT, images);
     }
 
-    @PutMapping(value = "/modifierProd/{idProd}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE+";charset=UTF-8")
+    @PutMapping(value = "/modifierProd/{idProd}")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public void modifierProd(
-            @RequestPart("produit") String produitJson,
+            @RequestPart("produit") byte[] produitJsonBytes,
             @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @PathVariable("idProd") String idProd) throws IOException, EmptyException, ProduitNotFoundException {
+
+        String produitJson = new String(produitJsonBytes, StandardCharsets.UTF_8);
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());

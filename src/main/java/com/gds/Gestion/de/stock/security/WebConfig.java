@@ -15,7 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "https://stock.g2sservice.com",
                         "https://bamakogadget.com",
-                        "http://localhost:4200"
+                        "http://localhost:4200",
+                        "http://localhost:42295"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
