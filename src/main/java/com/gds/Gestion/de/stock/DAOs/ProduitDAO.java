@@ -35,7 +35,8 @@ public class ProduitDAO {
     private boolean offreSpeciale;
     private boolean plusVendu;
     private boolean publier;
-//    private boolean plusVendu;
+    private String caracteristique;
+    private String info;
     // ####################
     private SupprimerStatus supprimerStatus;
     private CategorieStockDTO categorieStockProdDTO;

@@ -33,6 +33,8 @@ public class ProduitINPUT {
     private boolean offreSpeciale;
     private boolean plusVendu;
     private boolean publier;
+    private String caracteristique;
+    private String info;
 
     private List<MultipartFile> images;
     private List<String> imageUrls;

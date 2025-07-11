@@ -67,6 +67,8 @@ CREATE TABLE produit (
     slug VARCHAR(255) UNIQUE,
     prix_regulier VARCHAR(255),
     description VARCHAR(2560),
+    info VARCHAR(2560),
+    caracteristique VARCHAR(256),
     nouveaute BOOLEAN,
     vedette BOOLEAN,
     offre_speciale BOOLEAN,

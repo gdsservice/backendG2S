@@ -43,5 +43,7 @@ public class ProduitDTO {
     private boolean offreSpeciale;
     private boolean plusVendu;
     private boolean publier;
+    private String caracteristique;
+    private String info;
 
 }

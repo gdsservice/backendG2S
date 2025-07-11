@@ -137,6 +137,9 @@ public class ProduitImpl implements InterfaceProduit {
         produitExist.setPlusVendu(produitINPUT.isPlusVendu());
         produitExist.setVedette(produitINPUT.isVedette());
         produitExist.setPublier(produitINPUT.isPublier());
+        produitExist.setCaracteristique(produitINPUT.getCaracteristique());
+        produitExist.setInfo(produitINPUT.getInfo());
+
 
         // Mise à jour de la catégorie si nécessaire
         if (produitINPUT.getCategorieStockProdDTO() != null) {

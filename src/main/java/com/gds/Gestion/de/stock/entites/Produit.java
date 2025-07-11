@@ -36,9 +36,11 @@ public class Produit {
     private String slug;
     @Column(name = "prix_regulier")
     private String prixRegulier;
-
-    @Column(length = 1000)
+    @Column(length = 2560)
     private String description;
+    @Column(length = 2560)
+    private String info;
+    private String caracteristique;
 
     private boolean nouveaute;
     private boolean vedette;
@@ -47,6 +49,7 @@ public class Produit {
     @Column(name = "plus_vendu")
     private boolean plusVendu;
     private boolean publier;
+
 
     @ManyToOne
     private Utilisateur utilisateurProd;

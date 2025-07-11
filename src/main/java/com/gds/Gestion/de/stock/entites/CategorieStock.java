@@ -30,6 +30,7 @@ public class CategorieStock {
     private LocalDate date;
     @Column(unique = true)
     private boolean publier;
+    @Column(unique = true)
     private String slug;
     @Enumerated(EnumType.STRING)
     private SupprimerStatus supprimerStatus;
