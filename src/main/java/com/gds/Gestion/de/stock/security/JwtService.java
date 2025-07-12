@@ -62,8 +62,7 @@ public class JwtService {
         String bearer = Jwts.builder()
                 .setIssuedAt(new Date(currentTime))
                 .setExpiration(new Date(expirationTime))
-                .setSubject(utilisate
-                        ur.getEmail())
+                .setSubject(utilisateur.getEmail())
                 .claim("id", utilisateur.getId())
                 .claim("nom", utilisateur.getNom())
                 .claim("prenom", utilisateur.getPrenom())
