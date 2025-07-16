@@ -27,6 +27,9 @@ public class Commande {
     private SupprimerStatus supprimerStatus;
     @Column(name = "date_ajout")
     private LocalDate dateAjout;
+    @Column(nullable = false)
+    private boolean traiter;
+
 
     @ManyToOne
     @JoinColumn(name = "client_cde_id")

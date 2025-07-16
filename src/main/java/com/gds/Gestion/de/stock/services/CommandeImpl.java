@@ -1,5 +1,6 @@
 package com.gds.Gestion.de.stock.services;
 
+import com.gds.Gestion.de.stock.DAOs.CommandeDAO;
 import com.gds.Gestion.de.stock.Input.CommandeInput;
 import com.gds.Gestion.de.stock.entites.Commande;
 import com.gds.Gestion.de.stock.entites.CommandeProduit;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +38,7 @@ public class CommandeImpl implements InterfaceCommande{
         commande.setQuantite(commandeInput.getCommande().getQuantite());
         commande.setTotal(commandeInput.getCommande().getTotal());
         commande.setClientCde(commandeInput.getCommande().getClientCde());
+        commande.setTraiter(false);
         commandeRepository.save(commande);
 
         List<CommandeProduit> listCommandeProduit = commandeInput.getListCommandeProduit();
@@ -49,5 +52,31 @@ public class CommandeImpl implements InterfaceCommande{
           commandeProduitRepository.save(commandeProduit);
         }
 
+    }
+
+    @Override
+    public List<CommandeDAO> listCommande() {
+        List<Commande> listCommande = commandeRepository.findAllBySupprimerStatusFalse();
+        List<CommandeDAO> commandeDAOList = new ArrayList<>();
+        for (Commande commande : listCommande){
+            CommandeDAO commandeDAO = new CommandeDAO();
+            commandeDAO.setCommande(commande);
+            commandeDAO.setCommandeProduitList(commandeProduitRepository.findByCommandeIdCde(commande.getIdCde()));
+            commandeDAOList.add(commandeDAO);
+        }
+        return commandeDAOList;
+    }
+
+    @Override
+    public List<CommandeDAO> listCommandeTraiterFalse() {
+        List<Commande> listCommande = commandeRepository.findBySupprimerStatusFalseAndTraiterFalse();
+        List<CommandeDAO> commandeDAOList = new ArrayList<>();
+        for (Commande commande : listCommande){
+            CommandeDAO commandeDAO = new CommandeDAO();
+            commandeDAO.setCommande(commande);
+            commandeDAO.setCommandeProduitList(commandeProduitRepository.findByCommandeIdCde(commande.getIdCde()));
+            commandeDAOList.add(commandeDAO);
+        }
+        return commandeDAOList;
     }
 }
