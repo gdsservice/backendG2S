@@ -29,6 +29,8 @@ public class Commande {
     private LocalDate dateAjout;
     @Column(nullable = false)
     private boolean traiter;
+    @Column(length = 2560,nullable = true)
+    private String note;
 
 
     @ManyToOne

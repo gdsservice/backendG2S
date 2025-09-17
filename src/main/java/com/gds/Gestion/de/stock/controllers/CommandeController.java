@@ -2,7 +2,9 @@ package com.gds.Gestion.de.stock.controllers;
 
 import com.gds.Gestion.de.stock.DAOs.CommandeDAO;
 import com.gds.Gestion.de.stock.Input.CommandeInput;
+import com.gds.Gestion.de.stock.entites.Commande;
 import com.gds.Gestion.de.stock.exceptions.EmptyException;
+import com.gds.Gestion.de.stock.exceptions.VenteNotFoundException;
 import com.gds.Gestion.de.stock.services.InterfaceCommande;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -33,5 +35,17 @@ public class CommandeController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN','USER')")
     private List<CommandeDAO> commandeDAOListTraiter(){
         return interfaceCommande.listCommandeTraiterFalse();
+    }
+
+    @GetMapping("/afficher")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN','USER')")
+    private CommandeDAO afficher(@Valid @RequestParam("idCde") String idCde) throws EmptyException {
+        return interfaceCommande.afficher(idCde);
+    }
+
+    @PutMapping("/traiterCde")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN','USER')")
+    private void traiterCde(@Valid @RequestBody Commande commande) throws EmptyException {
+        interfaceCommande.traiterCde(commande);
     }
 }

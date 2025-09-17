@@ -33,6 +33,7 @@ services:
     networks:
       - stock-network
 
+
 volumes:
   mysql-data:
 
