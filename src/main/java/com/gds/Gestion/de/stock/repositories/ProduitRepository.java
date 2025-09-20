@@ -16,7 +16,7 @@ public interface ProduitRepository extends JpaRepository<Produit, String> {
 
 //    Bamako-Gadgets
     @Query(
-            value = "SELECT * FROM produit WHERE publier = true AND supprimer_status = false",
+            value = "SELECT * FROM produit WHERE publier = '1' AND supprimer_status = 'false'",
             nativeQuery = true
     )
     List<Produit> findAllPublierEtNonSupprime();

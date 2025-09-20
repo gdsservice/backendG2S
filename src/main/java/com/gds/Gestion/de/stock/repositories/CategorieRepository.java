@@ -20,7 +20,9 @@ public interface CategorieRepository extends JpaRepository<CategorieStock, Long>
 
 
 //    Bamako-Gadgets
-    @Query(value = "SELECT * FROM categorie_stock WHERE publier = true AND supprimer_status = false",
+//    List<CategorieStock> findBySupprimerStatusFalseAndPublierTrue();
+
+    @Query(value = "SELECT * FROM categorie_stock WHERE supprimer_status = 'false' AND publier = '1'",
             nativeQuery = true)
     List<CategorieStock> findAllBySupprimerStatusFalsePublierTrue();
 
