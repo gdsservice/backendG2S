@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/login",
                                 "/produit/{idProd}",
+                                "/sitemap.xml",
                                 "/produit/main/{idProd}",
                                 "/produit/recherche**",
                                 "/produit/slug/**",
