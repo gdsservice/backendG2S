@@ -3,6 +3,8 @@ package com.gds.Gestion.de.stock.services;
 import com.gds.Gestion.de.stock.DAOs.BannerDAO;
 import com.gds.Gestion.de.stock.Input.BannerINPUT;
 import com.gds.Gestion.de.stock.exceptions.EmptyException;
+import com.gds.Gestion.de.stock.exceptions.ProduitNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -13,4 +15,8 @@ public interface InterfaceBanner {
     void addBanner(BannerINPUT bannerINPUT, List<MultipartFile> images) throws EmptyException, IOException;
 
     List<BannerDAO> listBanner();
+
+    BannerDAO afficherBanner(@Valid String idBanner) throws ProduitNotFoundException;
+
+    void modifierBanner(BannerINPUT bannerINPUT, List<MultipartFile> images) throws ProduitNotFoundException, IOException;
 }

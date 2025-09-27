@@ -2,11 +2,10 @@ package com.gds.Gestion.de.stock.services;
 
 import com.gds.Gestion.de.stock.DAOs.BannerDAO;
 import com.gds.Gestion.de.stock.Input.BannerINPUT;
-import com.gds.Gestion.de.stock.entites.Banner;
-import com.gds.Gestion.de.stock.entites.BannerImage;
-import com.gds.Gestion.de.stock.entites.Utilisateur;
+import com.gds.Gestion.de.stock.entites.*;
 import com.gds.Gestion.de.stock.enums.SupprimerStatus;
 import com.gds.Gestion.de.stock.exceptions.EmptyException;
+import com.gds.Gestion.de.stock.exceptions.ProduitNotFoundException;
 import com.gds.Gestion.de.stock.mappers.BannerMapper;
 import com.gds.Gestion.de.stock.repositories.BannerImageRepository;
 import com.gds.Gestion.de.stock.repositories.BannerRepository;
@@ -65,5 +64,46 @@ public class BannerImpl implements InterfaceBanner{
         List<Banner> allBySupprimerStatusFalse = bannerRepository.findAllBySupprimerStatusFalse();
         return allBySupprimerStatusFalse.stream().map(banner -> bannerMapper.mapBannerADAO(banner))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public BannerDAO afficherBanner(String idBanner) throws ProduitNotFoundException {
+        return bannerMapper.mapBannerADAO(bannerRepository.findById(idBanner).orElseThrow(()->
+                new ProduitNotFoundException(" Cet banner n'existe pas")));
+    }
+
+    @Override
+    public void modifierBanner(BannerINPUT bannerINPUT, List<MultipartFile> images) throws ProduitNotFoundException, IOException {
+        // Vérifier que le produit existe
+        Banner bannerExist = bannerRepository.findById(bannerINPUT.getIdBanner())
+                .orElseThrow(() -> new ProduitNotFoundException("Banner non trouvé avec ID: " + bannerINPUT.getIdBanner()));
+
+        // Mise à jour des champs de base
+        bannerExist.setTitre(bannerINPUT.getTitre());
+        bannerExist.setUtilisateurBanner(bannerINPUT.getUtilisateurBanner());
+        bannerExist.setSupprimerStatus(SupprimerStatus.FALSE);
+        bannerExist.setIdBanner(bannerINPUT.getIdBanner());
+        bannerExist.setPublier(bannerINPUT.isPublier());
+        bannerExist.setBtn_link(bannerINPUT.getBtn_link());
+        bannerExist.setBtn_text(bannerINPUT.getBtn_text());
+        bannerExist.setSous_titre(bannerINPUT.getSous_titre());
+
+        // Gestion des images
+        if (images != null && !images.isEmpty()) {
+            // Supprimer les anciennes images
+            bannerImageRepository.deleteByBannerIdBanner(bannerExist.getIdBanner());
+            // Ajouter les nouvelles images
+            List<BannerImage> bannerImages = new ArrayList<>();
+            for (MultipartFile file : images) {
+                BannerImage image = new BannerImage();
+                image.setName(file.getOriginalFilename());
+                image.setType(file.getContentType());
+                image.setData(file.getBytes());
+                image.setBanner(bannerExist);
+                bannerImages.add(image);
+            }
+            bannerImageRepository.saveAll(bannerImages);
+        }
+        bannerRepository.save(bannerExist);
     }
 }

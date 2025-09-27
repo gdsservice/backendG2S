@@ -90,8 +90,6 @@ public class ProduitImpl implements InterfaceProduit {
         }
     }
 
-
-
     @Override
     public ProduitDTO enregistrerVenteProd(ProduitDTO produitDTO) {
         Produit produit = produitMapper.mapDeDtoAProd(produitDTO);
@@ -167,7 +165,6 @@ public class ProduitImpl implements InterfaceProduit {
         produitRepository.save(produitExist);
     }
 
-
     @Override
     public void suppressionProd(String idProd) throws ProduitNotFoundException {
         Produit produit = produitRepository.findById(idProd)
@@ -194,7 +191,6 @@ public class ProduitImpl implements InterfaceProduit {
         }
         return produitMapper.mapDeProdADAO(bySlug);
     }
-
 
     @Override
     public List<ProduitDAO> ListerProd() {
