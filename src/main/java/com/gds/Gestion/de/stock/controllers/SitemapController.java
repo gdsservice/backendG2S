@@ -4,7 +4,6 @@ import com.gds.Gestion.de.stock.DAOs.ProduitDAO;
 import com.gds.Gestion.de.stock.services.InterfaceProduit;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +20,7 @@ public class SitemapController {
 //    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public String generateSitemap() {
         String baseUrl = "https://bamakogadget.com";
-        List<ProduitDAO> produits = interfaceProduit.ListerProd();
+        List<ProduitDAO> produitDAO = interfaceProduit.ListerProd();
 
         StringBuilder sitemap = new StringBuilder();
         sitemap.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -35,11 +34,11 @@ public class SitemapController {
         sitemap.append("    <priority>1.0</priority>\n");
         sitemap.append("  </url>\n");
 
-        // Ajout des produits
-        for (ProduitDAO produit : produits) {
+        // Ajout des produitDAO
+        for (ProduitDAO produit : produitDAO) {
             sitemap.append("  <url>\n");
             sitemap.append("    <loc>").append(baseUrl)
-                    .append("/produits/").append(produit.getSlug()).append("</loc>\n");
+                    .append("/produitDAO/").append(produit.getSlug()).append("</loc>\n");
             sitemap.append("    <lastmod>").append(LocalDate.now()).append("</lastmod>\n");
             sitemap.append("    <changefreq>weekly</changefreq>\n");
             sitemap.append("    <priority>0.8</priority>\n");
