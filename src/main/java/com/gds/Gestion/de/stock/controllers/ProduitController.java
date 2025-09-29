@@ -96,7 +96,7 @@ public class ProduitController {
     }
 
     @GetMapping("/slug/{slug}")
-    private ProduitDAO afficherSlug(@Valid @PathVariable String slug) throws ProduitNotFoundException, EmptyException {
+    public ProduitDAO afficherSlug(@Valid @PathVariable String slug) throws ProduitNotFoundException, EmptyException {
         return interfaceProduit.afficherSlug(slug);
     }
 

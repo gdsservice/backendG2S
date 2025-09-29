@@ -38,7 +38,7 @@ public class SitemapController {
         for (ProduitDAO produit : produitDAO) {
             sitemap.append("  <url>\n");
             sitemap.append("    <loc>").append(baseUrl)
-                    .append("/produitDAO/").append(produit.getSlug()).append("</loc>\n");
+                    .append("/produit/").append(produit.getSlug()).append("</loc>\n");
             sitemap.append("    <lastmod>").append(LocalDate.now()).append("</lastmod>\n");
             sitemap.append("    <changefreq>weekly</changefreq>\n");
             sitemap.append("    <priority>0.8</priority>\n");
