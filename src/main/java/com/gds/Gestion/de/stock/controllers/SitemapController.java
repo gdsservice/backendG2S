@@ -4,6 +4,7 @@ import com.gds.Gestion.de.stock.DAOs.ProduitDAO;
 import com.gds.Gestion.de.stock.services.InterfaceProduit;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,8 +18,7 @@ public class SitemapController {
     private final InterfaceProduit interfaceProduit;
 
     @GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
-//    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
-    public String generateSitemap() {
+    public ResponseEntity<String> generateSitemap() {
         String baseUrl = "https://bamakogadget.com";
         List<ProduitDAO> produitDAO = interfaceProduit.ListerProd();
 
@@ -34,7 +34,7 @@ public class SitemapController {
         sitemap.append("    <priority>1.0</priority>\n");
         sitemap.append("  </url>\n");
 
-        // Ajout des produitDAO
+        // Ajout des produits
         for (ProduitDAO produit : produitDAO) {
             sitemap.append("  <url>\n");
             sitemap.append("    <loc>").append(baseUrl)
@@ -46,9 +46,9 @@ public class SitemapController {
         }
 
         sitemap.append("</urlset>");
-        System.out.println("===========================");
-        System.out.println(sitemap.toString());
-        System.out.println("===========================");
-        return sitemap.toString();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_XML)
+                .body(sitemap.toString());
     }
 }
