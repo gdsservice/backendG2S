@@ -85,4 +85,10 @@ public class BannerController {
     private List<BannerDAO> bannerDAOList(){
         return interfaceBanner.listBanner();
     }
+
+    @PutMapping("/supprimerBanner")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    private void supprimerBanner(@Valid @RequestBody String idBanner) throws ProduitNotFoundException{
+        interfaceBanner.suppressionBanner(idBanner);
+    }
 }

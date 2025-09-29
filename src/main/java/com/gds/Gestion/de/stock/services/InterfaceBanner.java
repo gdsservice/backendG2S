@@ -19,4 +19,6 @@ public interface InterfaceBanner {
     BannerDAO afficherBanner(@Valid String idBanner) throws ProduitNotFoundException;
 
     void modifierBanner(BannerINPUT bannerINPUT, List<MultipartFile> images) throws ProduitNotFoundException, IOException;
+
+    void suppressionBanner(@Valid String idBanner) throws ProduitNotFoundException;
 }

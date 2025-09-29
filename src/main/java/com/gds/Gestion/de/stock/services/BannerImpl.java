@@ -106,4 +106,14 @@ public class BannerImpl implements InterfaceBanner{
         }
         bannerRepository.save(bannerExist);
     }
+
+    @Override
+    public void suppressionBanner(String idBanner) throws ProduitNotFoundException {
+        Banner banner = bannerRepository.findById(idBanner)
+                .orElseThrow(() -> new ProduitNotFoundException("Cet banner n'existe pas"));
+        if (banner.getSupprimerStatus() == SupprimerStatus.TRUE)
+            throw new ProduitNotFoundException("Ce banner est supprimer ! ");
+        banner.setSupprimerStatus(SupprimerStatus.TRUE);
+        bannerRepository.save(banner);
+    }
 }
