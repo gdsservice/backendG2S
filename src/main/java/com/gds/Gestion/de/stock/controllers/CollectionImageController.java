@@ -1,6 +1,6 @@
 package com.gds.Gestion.de.stock.controllers;
 
-import com.gds.Gestion.de.stock.services.InterfaceBannerImage;
+import com.gds.Gestion.de.stock.services.InterfaceCollectionImage;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,16 +12,16 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/images")
-public class BannerImageController {
+public class CollectionImageController {
 
-    private InterfaceBannerImage interfaceBannerImage;
+    private InterfaceCollectionImage internetCollectionImage;
 
-    @GetMapping("/banner/{idBanner}")
-    public ResponseEntity<byte[]> getImageByBannerId(
-            @PathVariable String idBanner,
+    @GetMapping("/collections/{idCollection}")
+    public ResponseEntity<byte[]> getImageByCollectionId(
+            @PathVariable String idCollection,
             @RequestParam(defaultValue = "0") int index) {
 
-        List<byte[]> images = interfaceBannerImage.getImagesForBanner(idBanner);
+        List<byte[]> images = internetCollectionImage.getImagesForCollection(idCollection);
 
         if (images.isEmpty() || index < 0 || index >= images.size()) {
             return ResponseEntity.notFound().build();
@@ -33,9 +33,9 @@ public class BannerImageController {
     }
 
 
-    @GetMapping("/banner/main/{idBanner}")
-    public ResponseEntity<byte[]> getMainImage(@PathVariable String idBanner) {
-        byte[] image = interfaceBannerImage.getMainImageForBanner(idBanner);
+    @GetMapping("/collections/main/{idCollection}")
+    public ResponseEntity<byte[]> getMainImage(@PathVariable String idCollection) {
+        byte[] image = internetCollectionImage.getMainImageForCollection(idCollection);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_JPEG_VALUE)
                 .body(image);

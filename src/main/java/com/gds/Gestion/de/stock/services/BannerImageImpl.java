@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class BannerImageImpl implements InternetBannerImage{
+public class BannerImageImpl implements InterfaceBannerImage {
 
     private BannerImageRepository bannerImageRepository;
 

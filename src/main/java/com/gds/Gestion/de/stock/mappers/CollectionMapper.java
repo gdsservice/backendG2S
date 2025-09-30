@@ -1,5 +1,6 @@
 package com.gds.Gestion.de.stock.mappers;
 
+import com.gds.Gestion.de.stock.DAOs.CollectionDAO;
 import com.gds.Gestion.de.stock.Input.CollectionINPUT;
 import com.gds.Gestion.de.stock.entites.Collections;
 import org.springframework.beans.BeanUtils;
@@ -12,5 +13,11 @@ public class CollectionMapper {
         Collections collection = new Collections();
         BeanUtils.copyProperties(collectionINPUT, collection);
         return collection;
+    }
+
+    public CollectionDAO mapCollectionADAO(Collections collection) {;
+        CollectionDAO collectionDAO = new CollectionDAO();
+        BeanUtils.copyProperties(collection, collectionDAO);
+        return collectionDAO;
     }
 }
